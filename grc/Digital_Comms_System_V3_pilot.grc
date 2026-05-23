@@ -53,6 +53,26 @@ blocks:
     coordinate: [584, 32.0]
     rotation: 0
     state: enabled
+- name: QPSK_constellation
+  id: variable_constellation
+  parameters:
+    comment: ''
+    const_points: '[-1-1j, -1+1j, 1+1j, 1-1j]'
+    dims: '1'
+    normalization: digital.constellation.AMPLITUDE_NORMALIZATION
+    npwr: '1.0'
+    precision: '8'
+    rot_sym: '4'
+    soft_dec_lut: None
+    sym_map: '[0, 1, 3, 2]'
+    type: qpsk
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [720, 120.0]
+    rotation: 0
+    state: disabled
 - name: alpha
   id: variable
   parameters:
@@ -92,8 +112,10 @@ blocks:
 - name: samp_rate
   id: variable
   parameters:
-    comment: was 800k
-    value: 1e6
+    comment: 'was 800k
+
+      not the problem though. depends on the required symbol rate'
+    value: 800e3
   states:
     bus_sink: false
     bus_source: false
@@ -113,6 +135,28 @@ blocks:
     coordinate: [480, 64.0]
     rotation: 0
     state: enabled
+- name: analog_agc3_xx_0
+  id: analog_agc3_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    attack_rate: 1e-3
+    comment: ''
+    decay_rate: 1e-4
+    gain: '1.0'
+    iir_update_decim: '1'
+    max_gain: '65536'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    reference: '1.0'
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1272, 328.0]
+    rotation: 0
+    state: bypassed
 - name: analog_random_uniform_source_x_0
   id: analog_random_uniform_source_x
   parameters:
@@ -158,7 +202,12 @@ blocks:
     affinity: ''
     alias: ''
     append: 'False'
-    comment: ''
+    comment: "run \npython3 V3_analyze_pilot_bitstream.py \nto analyze results\n\n\
+      ==> i.e., we do the bit->byte conversion inside the python file. \nThe python\
+      \ file takes in a file containing the bit stream received, \nand handles the\
+      \ alignment and the BER calculations. \n\n==> I am assuming that the GNU radio\
+      \ blocks works, but this block is weird. \nIdk if that's fair tbh. (Is this\
+      \ a firmware issue, actually...?)"
     file: pilot_rx_bits.txt
     type: byte
     unbuffered: 'False'
@@ -175,10 +224,10 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    comment: ''
+    comment: skips 1 second of data
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_items: 775*8
+    num_items: int(samp_rate)
     type: byte
     vlen: '1'
   states:
@@ -515,7 +564,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1072, 984.0]
+    coordinate: [1072, 1048.0]
     rotation: 0
     state: disabled
 - name: import_0
@@ -555,7 +604,6 @@ blocks:
       samp_rate / sps ~= bandwidth
 
 
-
       Bandwith has to do with "squareness" of wave and samp_rate/sps
 
 
@@ -580,7 +628,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1312, 272.0]
+    coordinate: [1472, 272.0]
     rotation: 0
     state: bypassed
 - name: qtgui_const_sink_x_0
@@ -821,7 +869,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1520, 288.0]
+    coordinate: [1680, 288.0]
     rotation: 0
     state: enabled
 - name: soapy_bladerf_sink_0
@@ -917,7 +965,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1784, 312.0]
+    coordinate: [1944, 312.0]
     rotation: 0
     state: enabled
 - name: virtual_sink_1
@@ -987,6 +1035,7 @@ blocks:
     state: disabled
 
 connections:
+- [analog_agc3_xx_0, '0', low_pass_filter_0, '0']
 - [analog_random_uniform_source_x_0, '0', blocks_throttle2_0_0_0_0, '0']
 - [blocks_skiphead_0, '0', blocks_file_sink_1, '0']
 - [blocks_throttle2_0_0_0_0, '0', blocks_unpack_k_bits_bb_2, '0']
@@ -1009,11 +1058,11 @@ connections:
 - [epy_block_2, '0', qtgui_time_sink_x_0, '0']
 - [low_pass_filter_0, '0', root_raised_cosine_filter_0, '0']
 - [root_raised_cosine_filter_0, '0', virtual_sink_0, '0']
-- [soapy_bladerf_source_0, '0', low_pass_filter_0, '0']
-- [soapy_plutosdr_source_0_0, '0', low_pass_filter_0, '0']
+- [soapy_bladerf_source_0, '0', analog_agc3_xx_0, '0']
+- [soapy_plutosdr_source_0_0, '0', analog_agc3_xx_0, '0']
 - [virtual_source_0, '0', digital_symbol_sync_xx_0, '0']
 - [virtual_source_1, '0', digital_diff_decoder_bb_0, '0']
-- [virtual_source_3, '0', low_pass_filter_0, '0']
+- [virtual_source_3, '0', analog_agc3_xx_0, '0']
 
 metadata:
   file_format: 1
