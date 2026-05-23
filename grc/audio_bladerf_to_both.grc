@@ -51,7 +51,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1120, 720.0]
+    coordinate: [1040, 296.0]
     rotation: 0
     state: enabled
 - name: freq_rx
@@ -378,7 +378,7 @@ blocks:
     bus_structure: null
     coordinate: [1312, 824.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: analog_nbfm_tx_0
   id: analog_nbfm_tx
   parameters:
@@ -432,7 +432,7 @@ blocks:
     bus_structure: null
     coordinate: [992, 792.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_freqshift_cc_0
   id: blocks_freqshift_cc
   parameters:
@@ -466,7 +466,7 @@ blocks:
     bus_structure: null
     coordinate: [328, 800.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_selector_0
   id: blocks_selector
   parameters:
@@ -489,7 +489,7 @@ blocks:
     bus_structure: null
     coordinate: [1632, 800.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_wavfile_source_0
   id: blocks_wavfile_source
   parameters:
@@ -533,7 +533,7 @@ blocks:
     bus_structure: null
     coordinate: [1128, 620.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: iio_pluto_source_0
   id: iio_pluto_source
   parameters:
@@ -564,7 +564,7 @@ blocks:
     bus_structure: null
     coordinate: [80, 716.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: low_pass_filter_0
   id: low_pass_filter
   parameters:
@@ -612,7 +612,7 @@ blocks:
     bus_structure: null
     coordinate: [544, 756.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_sink_x_0_0_0_0
   id: qtgui_sink_x
   parameters:
@@ -670,7 +670,7 @@ blocks:
     bus_structure: null
     coordinate: [1432, 672.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_sink_x_1
   id: qtgui_sink_x
   parameters:
@@ -759,7 +759,7 @@ blocks:
     bus_structure: null
     coordinate: [776, 776.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: soapy_bladerf_sink_0
   id: soapy_bladerf_sink
   parameters:
@@ -779,7 +779,7 @@ blocks:
     bus_structure: null
     coordinate: [1184, 432.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: soapy_bladerf_source_0
   id: soapy_bladerf_source
   parameters:
@@ -825,6 +825,7 @@ blocks:
 
 connections:
 - [analog_nbfm_rx_0, '0', blocks_selector_0, '1']
+- [analog_nbfm_rx_0, '0', zeromq_push_sink_0, '0']
 - [analog_nbfm_rx_0_0, '0', blocks_selector_0, '0']
 - [analog_nbfm_tx_0, '0', rational_resampler_xxx_0, '0']
 - [analog_simple_squelch_cc_0, '0', analog_nbfm_rx_0, '0']

@@ -110,28 +110,6 @@ blocks:
     coordinate: [440, 40.0]
     rotation: 0
     state: enabled
-- name: analog_agc3_xx_0
-  id: analog_agc3_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    attack_rate: 1e-3
-    comment: AGC3 is better...?
-    decay_rate: 1e-4
-    gain: '1.0'
-    iir_update_decim: '1'
-    max_gain: '65536'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    reference: '1.0'
-    type: complex
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [424, 760.0]
-    rotation: 0
-    state: enabled
 - name: blocks_multiply_const_vxx_0
   id: blocks_multiply_const_vxx
   parameters:
@@ -164,24 +142,6 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [344, 432.0]
-    rotation: 0
-    state: enabled
-- name: blocks_skiphead_0
-  id: blocks_skiphead
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_items: int(samp_rate)
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [904, 760.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle2_0
@@ -310,26 +270,6 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [1480, 728.0]
-    rotation: 0
-    state: enabled
-- name: digital_fll_band_edge_cc_0
-  id: digital_fll_band_edge_cc
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    filter_size: sps*2+1
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    rolloff: alpha_rolloff
-    samps_per_sym: sps
-    type: cc
-    w: 2*math.pi/sps/100
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [648, 768.0]
     rotation: 0
     state: enabled
 - name: digital_symbol_sync_xx_0
@@ -707,7 +647,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1248, 920.0]
+    coordinate: [1000, 1000.0]
     rotation: 0
     state: disabled
 - name: soapy_bladerf_sink_0
@@ -838,13 +778,11 @@ blocks:
     state: enabled
 
 connections:
-- [analog_agc3_xx_0, '0', digital_fll_band_edge_cc_0, '0']
 - [blocks_multiply_const_vxx_0, '0', blocks_throttle2_0, '0']
 - [blocks_multiply_const_vxx_0, '0', qtgui_sink_x_0, '0']
 - [blocks_multiply_const_vxx_0, '0', soapy_bladerf_sink_0, '0']
 - [blocks_multiply_const_vxx_0, '0', soapy_plutosdr_sink_0, '0']
 - [blocks_pack_k_bits_bb_0, '0', digital_constellation_modulator_0, '0']
-- [blocks_skiphead_0, '0', digital_symbol_sync_xx_0, '0']
 - [blocks_throttle2_0, '0', zeromq_push_sink_0, '0']
 - [blocks_uchar_to_float_0, '0', qtgui_time_sink_x_3, '0']
 - [blocks_unpack_k_bits_bb_0, '0', blocks_uchar_to_float_0, '0']
@@ -854,15 +792,11 @@ connections:
 - [digital_costas_loop_cc_0, '0', digital_constellation_decoder_cb_0, '0']
 - [digital_costas_loop_cc_0, '0', qtgui_const_sink_x_0, '0']
 - [digital_costas_loop_cc_0, '0', qtgui_time_sink_x_1, '0']
-- [digital_fll_band_edge_cc_0, '0', blocks_skiphead_0, '0']
-- [digital_fll_band_edge_cc_0, '0', root_raised_cosine_filter_0, '0']
 - [digital_symbol_sync_xx_0, '0', digital_costas_loop_cc_0, '0']
 - [root_raised_cosine_filter_0, '0', digital_symbol_sync_xx_0, '0']
 - [root_raised_cosine_filter_0, '0', qtgui_const_sink_x_0, '0']
 - [root_raised_cosine_filter_0, '0', qtgui_time_sink_x_1, '0']
-- [soapy_bladerf_source_1, '0', analog_agc3_xx_0, '0']
-- [soapy_plutosdr_source_0, '0', analog_agc3_xx_0, '0']
-- [zeromq_sub_source_0, '0', analog_agc3_xx_0, '0']
+- [zeromq_sub_source_0, '0', digital_symbol_sync_xx_0, '0']
 
 metadata:
   file_format: 1

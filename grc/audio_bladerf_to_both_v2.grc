@@ -496,7 +496,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    file: /home/laaaarry/Documents/FINCH-RF-SDR/grc/wahahaha.mp3
+    file: wahahaha.mp3
     maxoutbuf: '0'
     minoutbuf: '0'
     nchan: '1'
@@ -699,7 +699,7 @@ blocks:
     bus_structure: null
     coordinate: [1392, 544.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: rational_resampler_xxx_0
   id: rational_resampler_xxx
   parameters:

@@ -135,7 +135,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 2e6
+    value: 1e5
   states:
     bus_sink: false
     bus_source: false
@@ -147,7 +147,7 @@ blocks:
   id: variable
   parameters:
     comment: sample_per_symbol
-    value: '6'
+    value: '2'
   states:
     bus_sink: false
     bus_source: false
@@ -200,6 +200,26 @@ blocks:
     coordinate: [464, 944.0]
     rotation: 0
     state: disabled
+- name: analog_random_source_x_0
+  id: analog_random_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    max: '1'
+    maxoutbuf: '0'
+    min: '0'
+    minoutbuf: '0'
+    num_samps: '30000'
+    repeat: 'True'
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [120, 336.0]
+    rotation: 0
+    state: enabled
 - name: analog_sig_source_x_0
   id: analog_sig_source_x
   parameters:
@@ -243,24 +263,6 @@ blocks:
     coordinate: [240, 136.0]
     rotation: 0
     state: disabled
-- name: blocks_multiply_const_vxx_0
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: No idea what this does
-    const: '1'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [800, 336.0]
-    rotation: 0
-    state: enabled
 - name: blocks_multiply_xx_0
   id: blocks_multiply_xx
   parameters:
@@ -276,7 +278,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [280, 864.0]
+    coordinate: [352, 880.0]
     rotation: 0
     state: disabled
 - name: blocks_pack_k_bits_bb_0
@@ -294,7 +296,7 @@ blocks:
     bus_structure: null
     coordinate: [336, 432.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_packed_to_unpacked_xx_0
   id: blocks_packed_to_unpacked_xx
   parameters:
@@ -313,7 +315,7 @@ blocks:
     bus_structure: null
     coordinate: [1872, 1000.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_repeat_0
   id: blocks_repeat
   parameters:
@@ -350,6 +352,27 @@ blocks:
     coordinate: [904, 760.0]
     rotation: 0
     state: disabled
+- name: blocks_throttle2_0
+  id: blocks_throttle2
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    limit: auto
+    maximum: '0.1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1176, 344.0]
+    rotation: 0
+    state: enabled
 - name: blocks_uchar_to_float_0
   id: blocks_uchar_to_float
   parameters:
@@ -362,7 +385,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1712, 1128.0]
+    coordinate: [1728, 1144.0]
     rotation: 0
     state: enabled
 - name: blocks_unpack_k_bits_bb_0
@@ -380,7 +403,39 @@ blocks:
     bus_structure: null
     coordinate: [1880, 944.0]
     rotation: 0
-    state: disabled
+    state: enabled
+- name: blocks_unpack_k_bits_bb_1
+  id: blocks_unpack_k_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '8'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1104, 1184.0]
+    rotation: 0
+    state: enabled
+- name: blocks_unpack_k_bits_bb_1_0
+  id: blocks_unpack_k_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '8'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1048, 1288.0]
+    rotation: 0
+    state: enabled
 - name: blocks_unpacked_to_packed_xx_0
   id: blocks_unpacked_to_packed_xx
   parameters:
@@ -399,7 +454,7 @@ blocks:
     bus_structure: null
     coordinate: [312, 488.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_vector_source_x_0
   id: blocks_vector_source_x
   parameters:
@@ -419,7 +474,7 @@ blocks:
     bus_structure: null
     coordinate: [104, 440.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_vector_source_x_0_0
   id: blocks_vector_source_x
   parameters:
@@ -577,6 +632,114 @@ blocks:
     coordinate: [1112, 700.0]
     rotation: 0
     state: enabled
+- name: epy_block_0
+  id: epy_block
+  parameters:
+    _source_code: "\"\"\"\nber_align_hier.py  \u2014  BER Align Hier Block\n===========================================\n\
+      A GNU Radio embedded Python block that:\n  1. Buffers CAL_SIZE bytes from both\
+      \ TX and RX streams\n  2. Cross-correlates (once) to find the bit-lag between\
+      \ them\n  3. Locks the lag, applies a delay to the leading stream\n  4. Computes\
+      \ BER on a sliding window and emits it as a PMT message\n\nPorts\n-----\n  in0\
+      \  : TX byte stream  (unpacked bits, 1 bit per byte, MSB in bit 0)\n  in1  :\
+      \ RX byte stream  (same format, from demod)\n  out0 : message port \"ber_out\"\
+      \  \u2014 PMT pair  (lag_bits, ber_float)\n\nUsage in GRC\n------------\n  -\
+      \ Drop in as an \"Embedded Python Block\"\n  - Connect TX source \u2192 in0,\
+      \ demod output \u2192 in1\n  - Connect \"ber_out\" message port to a Message\
+      \ Debug or your own sink\n  - Tune CAL_SIZE and REPORT_EVERY to taste\n\nParameters\
+      \ (edit at top of class)\n----------------------------------\n  CAL_SIZE   \
+      \  : bytes per stream used for the one-shot lag calibration (default 4096)\n\
+      \  REPORT_EVERY : emit a BER message every this many bytes after lock  (default\
+      \ 1024)\n\"\"\"\n\nimport numpy as np\nimport pmt\nfrom gnuradio import gr\n\
+      \n\nclass blk(gr.sync_block):\n    \"\"\"Align TX vs RX byte streams via cross-correlation,\
+      \ then report BER.\"\"\"\n\n    def __init__(self, cal_size=4096, report_every=1024):\n\
+      \        gr.sync_block.__init__(\n            self,\n            name=\"BER\
+      \ Align\",\n            in_sig=[np.uint8, np.uint8],   # in0=TX, in1=RX\n  \
+      \          out_sig=None,                   # no stream output \u2014 messages\
+      \ only\n        )\n\n        # ---- tuneable parameters ----\n        self.CAL_SIZE\
+      \    = int(cal_size)\n        self.REPORT_EVERY = int(report_every)\n\n    \
+      \    # ---- internal state ----\n        self._tx_cal   = []          # calibration\
+      \ buffers\n        self._rx_cal   = []\n        self._locked   = False     \
+      \  # True once lag is found\n        self._lag      = 0           # positive\
+      \ = RX leads TX (trim RX front)\n                                     # negative\
+      \ = TX leads RX (trim TX front)\n        self._delay_buf = []         # holds\
+      \ the \"early\" stream during the lag gap\n        self._errors   = 0\n    \
+      \    self._total    = 0\n        self._since_report = 0\n\n        # message\
+      \ output port\n        self.message_port_register_out(pmt.intern(\"ber_out\"\
+      ))\n\n    # ------------------------------------------------------------------\n\
+      \    # helpers\n    # ------------------------------------------------------------------\n\
+      \n    def _to_bits(self, byte_arr):\n        \"\"\"Unpack uint8 array (1 bit/byte,\
+      \ bit in LSB) \u2192 float \xB10.5 for correlation.\"\"\"\n        bits = (byte_arr\
+      \ & 0x01).astype(np.float32)\n        return bits - 0.5   # zero-mean for clean\
+      \ cross-correlation\n\n    def _find_lag(self):\n        \"\"\"\n        Cross-correlate\
+      \ TX and RX calibration buffers.\n        Returns lag in *bits* (positive =\
+      \ RX is ahead of TX).\n        \"\"\"\n        tx = self._to_bits(np.array(self._tx_cal,\
+      \ dtype=np.uint8))\n        rx = self._to_bits(np.array(self._rx_cal, dtype=np.uint8))\n\
+      \n        # Full cross-correlation\n        # scipy fft method is faster for\
+      \ large buffers, but numpy is fine here\n        corr = np.correlate(rx, tx,\
+      \ mode='full')\n\n        # Peak index \u2192 lag\n        # corr[len(tx)-1]\
+      \ corresponds to zero lag\n        peak_idx = int(np.argmax(corr))\n       \
+      \ lag = peak_idx - (len(tx) - 1)\n\n        print(f\"[BER Align] Calibration\
+      \ complete. Lag = {lag} bits \"\n              f\"({'RX leads' if lag > 0 else\
+      \ 'TX leads' if lag < 0 else 'aligned'})\")\n        return lag\n\n    def _emit_ber(self,\
+      \ lag):\n        ber = self._errors / self._total if self._total > 0 else 0.0\n\
+      \        msg = pmt.cons(\n            pmt.from_long(int(lag)),       # car:\
+      \ lag in bits\n            pmt.from_double(float(ber))    # cdr: BER\n     \
+      \   )\n        self.message_port_pub(pmt.intern(\"ber_out\"), msg)\n       \
+      \ print(f\"[BER Align] BER = {ber:.6f}  \"\n              f\"({self._errors}/{self._total}\
+      \ errors,  lag={lag} bits)\")\n\n    # ------------------------------------------------------------------\n\
+      \    # main work function\n    # ------------------------------------------------------------------\n\
+      \n    def work(self, input_items, output_items):\n        tx_in = input_items[0]\n\
+      \        rx_in = input_items[1]\n        n     = len(tx_in)\n\n        # ----\
+      \ Phase 1: Calibration ----------------------------------------\n        if\
+      \ not self._locked:\n            self._tx_cal.extend(tx_in.tolist())\n     \
+      \       self._rx_cal.extend(rx_in.tolist())\n\n            if len(self._tx_cal)\
+      \ >= self.CAL_SIZE:\n                self._tx_cal = self._tx_cal[:self.CAL_SIZE]\n\
+      \                self._rx_cal = self._rx_cal[:self.CAL_SIZE]\n             \
+      \   self._lag    = self._find_lag()\n                self._locked = True\n\n\
+      \                # Pre-fill the delay buffer so we can start comparing immediately.\n\
+      \                # The stream that arrives FIRST needs to wait for the other\
+      \ to catch up.\n                # lag > 0 \u2192 RX is ahead, skip first `lag`\
+      \ RX bits\n                # lag < 0 \u2192 TX is ahead, skip first `|lag|`\
+      \ TX bits\n                # (We just discard the offset bytes; they were calibration\
+      \ data anyway.)\n\n            return n   # consume all input, emit nothing\
+      \ during calibration\n\n        # ---- Phase 2: Locked \u2014 compare bit by\
+      \ bit ------------------------\n        lag = self._lag\n\n        if lag >=\
+      \ 0:\n            # RX arrived lag bits earlier \u2192 trim lag bits off the\
+      \ front of RX\n            # We already consumed cal data so just align within\
+      \ this work call\n            tx_bits = tx_in & 0x01\n            rx_bits =\
+      \ rx_in & 0x01\n\n            # Apply lag offset within available samples\n\
+      \            offset = min(lag, n)\n            tx_cmp = tx_bits[: n - offset]\n\
+      \            rx_cmp = rx_bits[offset: n]\n        else:\n            # TX arrived\
+      \ |lag| bits earlier \u2192 trim from TX\n            offset  = min(-lag, n)\n\
+      \            tx_bits = tx_in & 0x01\n            rx_bits = rx_in & 0x01\n  \
+      \          tx_cmp  = tx_bits[offset: n]\n            rx_cmp  = rx_bits[: n -\
+      \ offset]\n\n        # Count bit errors\n        if len(tx_cmp) > 0 and len(rx_cmp)\
+      \ > 0:\n            cmp_len = min(len(tx_cmp), len(rx_cmp))\n            self._errors\
+      \ += int(np.sum(tx_cmp[:cmp_len] != rx_cmp[:cmp_len]))\n            self._total\
+      \  += cmp_len\n            self._since_report += cmp_len\n\n        # Emit BER\
+      \ message periodically\n        if self._since_report >= self.REPORT_EVERY:\n\
+      \            self._emit_ber(self._lag)\n            self._since_report = 0\n\
+      \n        return n\n"
+    affinity: ''
+    alias: ''
+    cal_size: '65536'
+    comment: Forget about the BER calculations. Could you have two inputs -- byte
+      stream 1 and byte stream 2, and output delay I should add? I will then add the
+      delay to stream 2, and the use the delayed stream 2 and the original stream
+      1 to calculate the BER (using the inbuilt BER block)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    report_every: '1024'
+  states:
+    _io_cache: ('BER Align', 'blk', [('cal_size', '4096'), ('report_every', '1024')],
+      [('0', 'byte', 1), ('1', 'byte', 1)], [('ber_out', 'message', 1)], 'Align TX
+      vs RX byte streams via cross-correlation, then report BER.', [])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1176, 1248.0]
+    rotation: 0
+    state: enabled
 - name: fec_ber_bf_0
   id: fec_ber_bf
   parameters:
@@ -592,9 +755,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [760, 1000.0]
+    coordinate: [1336, 1152.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: import_0
   id: import
   parameters:
@@ -699,7 +862,70 @@ blocks:
     bus_structure: null
     coordinate: [1768, 864.0]
     rotation: 0
-    state: enabled
+    state: disabled
+- name: qtgui_number_sink_0
+  id: qtgui_number_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    autoscale: 'False'
+    avg: '0'
+    color1: ("black", "black")
+    color10: ("black", "black")
+    color2: ("black", "black")
+    color3: ("black", "black")
+    color4: ("black", "black")
+    color5: ("black", "black")
+    color6: ("black", "black")
+    color7: ("black", "black")
+    color8: ("black", "black")
+    color9: ("black", "black")
+    comment: ''
+    factor1: '1'
+    factor10: '1'
+    factor2: '1'
+    factor3: '1'
+    factor4: '1'
+    factor5: '1'
+    factor6: '1'
+    factor7: '1'
+    factor8: '1'
+    factor9: '1'
+    graph_type: qtgui.NUM_GRAPH_HORIZ
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    max: '1'
+    min: '-1'
+    name: '""'
+    nconnections: '1'
+    type: float
+    unit1: ''
+    unit10: ''
+    unit2: ''
+    unit3: ''
+    unit4: ''
+    unit5: ''
+    unit6: ''
+    unit7: ''
+    unit8: ''
+    unit9: ''
+    update_time: '0.10'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1536, 1168.0]
+    rotation: 0
+    state: disabled
 - name: qtgui_sink_x_0
   id: qtgui_sink_x
   parameters:
@@ -728,7 +954,7 @@ blocks:
     bus_structure: null
     coordinate: [1048, 200.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_1
   id: qtgui_time_sink_x
   parameters:
@@ -825,7 +1051,7 @@ blocks:
     bus_structure: null
     coordinate: [1800, 712.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_3
   id: qtgui_time_sink_x
   parameters:
@@ -952,13 +1178,15 @@ blocks:
     affinity: ''
     alias: ''
     alpha: '0.35'
-    comment: tom's block (?)
+    comment: 'tom''s block (?)
+
+      num taps should be 11* num_taps'
     decim: '1'
     gain: '1'
     interp: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
-    ntaps: int(11*samp_rate)
+    ntaps: int(samp_rate)
     samp_rate: samp_rate
     sym_rate: samp_rate/4
     type: fir_filter_ccf
@@ -966,7 +1194,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [976, 432.0]
+    coordinate: [920, 344.0]
     rotation: 0
     state: enabled
 - name: soapy_bladerf_sink_0
@@ -1062,7 +1290,33 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1224, 328.0]
+    coordinate: [1360, 384.0]
+    rotation: 0
+    state: enabled
+- name: virtual_sink_1
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: ber_input_signal
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [504, 520.0]
+    rotation: 0
+    state: enabled
+- name: virtual_sink_2
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: ber_output_signal
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2048, 952.0]
     rotation: 0
     state: enabled
 - name: virtual_source_0
@@ -1076,6 +1330,32 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [80, 800.0]
+    rotation: 0
+    state: enabled
+- name: virtual_source_1
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: ber_input_signal
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [872, 1152.0]
+    rotation: 0
+    state: enabled
+- name: virtual_source_2
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: ber_output_signal
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [872, 1240.0]
     rotation: 0
     state: enabled
 - name: zeromq_pull_source_0
@@ -1125,20 +1405,22 @@ connections:
 - [analog_agc3_xx_0, '0', digital_symbol_sync_xx_0, '0']
 - [analog_agc_xx_0, '0', digital_fll_band_edge_cc_0, '0']
 - [analog_agc_xx_0, '0', digital_symbol_sync_xx_0, '0']
+- [analog_random_source_x_0, '0', blocks_pack_k_bits_bb_0, '0']
 - [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '1']
-- [blocks_multiply_const_vxx_0, '0', qtgui_sink_x_0, '0']
-- [blocks_multiply_const_vxx_0, '0', root_raised_cosine_filter_1, '0']
-- [blocks_multiply_const_vxx_0, '0', soapy_bladerf_sink_0, '0']
-- [blocks_multiply_const_vxx_0, '0', soapy_plutosdr_sink_0, '0']
 - [blocks_multiply_xx_0, '0', analog_agc_xx_0, '0']
 - [blocks_pack_k_bits_bb_0, '0', digital_constellation_encoder_bc_0, '0']
 - [blocks_pack_k_bits_bb_0, '0', digital_constellation_modulator_0, '0']
+- [blocks_pack_k_bits_bb_0, '0', virtual_sink_1, '0']
 - [blocks_packed_to_unpacked_xx_0, '0', blocks_uchar_to_float_0, '0']
 - [blocks_repeat_0, '0', soapy_bladerf_sink_0, '0']
 - [blocks_repeat_0, '0', soapy_plutosdr_sink_0, '0']
 - [blocks_skiphead_0, '0', digital_symbol_sync_xx_0, '0']
+- [blocks_throttle2_0, '0', virtual_sink_0, '0']
 - [blocks_uchar_to_float_0, '0', qtgui_time_sink_x_3, '0']
 - [blocks_unpack_k_bits_bb_0, '0', blocks_uchar_to_float_0, '0']
+- [blocks_unpack_k_bits_bb_0, '0', virtual_sink_2, '0']
+- [blocks_unpack_k_bits_bb_1, '0', epy_block_0, '0']
+- [blocks_unpack_k_bits_bb_1_0, '0', epy_block_0, '1']
 - [blocks_unpacked_to_packed_xx_0, '0', digital_constellation_modulator_0, '0']
 - [blocks_vector_source_x_0, '0', blocks_pack_k_bits_bb_0, '0']
 - [blocks_vector_source_x_0, '0', blocks_unpacked_to_packed_xx_0, '0']
@@ -1147,22 +1429,26 @@ connections:
 - [digital_constellation_decoder_cb_0, '0', blocks_packed_to_unpacked_xx_0, '0']
 - [digital_constellation_decoder_cb_0, '0', blocks_unpack_k_bits_bb_0, '0']
 - [digital_constellation_encoder_bc_0, '0', blocks_repeat_0, '0']
-- [digital_constellation_modulator_0, '0', blocks_multiply_const_vxx_0, '0']
+- [digital_constellation_modulator_0, '0', root_raised_cosine_filter_1, '0']
 - [digital_costas_loop_cc_0, '0', digital_constellation_decoder_cb_0, '0']
 - [digital_costas_loop_cc_0, '0', qtgui_const_sink_x_0, '0']
 - [digital_costas_loop_cc_0, '0', qtgui_time_sink_x_1, '0']
 - [digital_fll_band_edge_cc_0, '0', blocks_skiphead_0, '0']
 - [digital_fll_band_edge_cc_0, '0', root_raised_cosine_filter_0, '0']
 - [digital_symbol_sync_xx_0, '0', digital_costas_loop_cc_0, '0']
+- [epy_block_0, ber_out, qtgui_number_sink_0, '0']
+- [fec_ber_bf_0, '0', qtgui_number_sink_0, '0']
 - [root_raised_cosine_filter_0, '0', digital_symbol_sync_xx_0, '0']
 - [root_raised_cosine_filter_0, '0', qtgui_const_sink_x_0, '0']
 - [root_raised_cosine_filter_0, '0', qtgui_time_sink_x_1, '0']
-- [root_raised_cosine_filter_1, '0', virtual_sink_0, '0']
+- [root_raised_cosine_filter_1, '0', blocks_throttle2_0, '0']
 - [soapy_bladerf_source_1, '0', analog_agc3_xx_0, '0']
 - [soapy_bladerf_source_1, '0', analog_agc_xx_0, '0']
 - [soapy_bladerf_source_1, '0', blocks_multiply_xx_0, '0']
 - [soapy_plutosdr_source_0, '0', analog_agc3_xx_0, '0']
 - [virtual_source_0, '0', digital_symbol_sync_xx_0, '0']
+- [virtual_source_1, '0', blocks_unpack_k_bits_bb_1, '0']
+- [virtual_source_2, '0', blocks_unpack_k_bits_bb_1_0, '0']
 
 metadata:
   file_format: 1

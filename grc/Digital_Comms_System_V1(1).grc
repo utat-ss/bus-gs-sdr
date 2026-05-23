@@ -1,0 +1,1017 @@
+options:
+  parameters:
+    author: tom
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: backup
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: Not titled yet
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: QPSK_constellation
+  id: variable_constellation
+  parameters:
+    comment: ''
+    const_points: '[-1-1j, -1+1j, 1+1j, 1-1j]'
+    dims: '1'
+    normalization: digital.constellation.AMPLITUDE_NORMALIZATION
+    npwr: '1.0'
+    precision: '8'
+    rot_sym: '4'
+    soft_dec_lut: None
+    sym_map: '[0, 1, 3, 2]'
+    type: calcdist
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [584, 32.0]
+    rotation: 0
+    state: enabled
+- name: Rx_gain
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '100'
+    value: '80'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [936, 160.0]
+    rotation: 0
+    state: enabled
+- name: Tx_gain
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '100'
+    value: '80'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [824, 160.0]
+    rotation: 0
+    state: enabled
+- name: alpha
+  id: variable
+  parameters:
+    comment: ''
+    value: '0.5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [808, 48.0]
+    rotation: 0
+    state: disabled
+- name: alpha
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0.1'
+    step: '0.05'
+    stop: '0.6'
+    value: '0.5'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [888, 32.0]
+    rotation: 0
+    state: enabled
+- name: center_freq
+  id: variable
+  parameters:
+    comment: ''
+    value: 700e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [464, 152.0]
+    rotation: 0
+    state: enabled
+- name: fc
+  id: variable
+  parameters:
+    comment: ''
+    value: '200000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1352, 72.0]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '800000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [200, 64.0]
+    rotation: 0
+    state: enabled
+- name: sps
+  id: variable
+  parameters:
+    comment: ''
+    value: '8'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [480, 64.0]
+    rotation: 0
+    state: enabled
+- name: analog_random_uniform_source_x_0
+  id: analog_random_uniform_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: instead of this, have a set pilor signal?
+    maximum: '256'
+    maxoutbuf: '0'
+    minimum: '0'
+    minoutbuf: '0'
+    seed: '0'
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [56, 240.0]
+    rotation: 0
+    state: disabled
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: ber_src
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [528, 432.0]
+    rotation: 0
+    state: enabled
+- name: blocks_file_sink_0_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: ber_rx
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [960, 936.0]
+    rotation: 0
+    state: enabled
+- name: blocks_head_0
+  id: blocks_head
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: '500000'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [248, 256.0]
+    rotation: 0
+    state: disabled
+- name: blocks_throttle2_0_0_0_0
+  id: blocks_throttle2
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    limit: auto
+    maximum: '0.1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [272, 320.0]
+    rotation: 0
+    state: enabled
+- name: blocks_unpack_k_bits_bb_0
+  id: blocks_unpack_k_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '2'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [768, 952.0]
+    rotation: 0
+    state: enabled
+- name: blocks_unpack_k_bits_bb_1
+  id: blocks_unpack_k_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '8'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [520, 1128.0]
+    rotation: 0
+    state: disabled
+- name: blocks_unpack_k_bits_bb_2
+  id: blocks_unpack_k_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '8'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [376, 448.0]
+    rotation: 0
+    state: enabled
+- name: digital_constellation_decoder_cb_0
+  id: digital_constellation_decoder_cb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation: QPSK_constellation
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1432, 696.0]
+    rotation: 0
+    state: enabled
+- name: digital_constellation_modulator_0
+  id: digital_constellation_modulator
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation: QPSK_constellation
+    differential: 'True'
+    excess_bw: alpha
+    log: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_symbol: sps
+    truncate: 'False'
+    verbose: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [472, 304.0]
+    rotation: 0
+    state: enabled
+- name: digital_costas_loop_cc_0
+  id: digital_costas_loop_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    order: '4'
+    use_snr: 'False'
+    w: 2*math.pi/100
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1080, 656.0]
+    rotation: 0
+    state: enabled
+- name: digital_diff_decoder_bb_0
+  id: digital_diff_decoder_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    coding: digital.DIFF_DIFFERENTIAL
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    modulus: '4'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [416, 944.0]
+    rotation: 0
+    state: enabled
+- name: digital_map_bb_0
+  id: digital_map_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    map: '[0, 1, 3, 2]'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [616, 952.0]
+    rotation: 0
+    state: enabled
+- name: digital_symbol_sync_xx_0
+  id: digital_symbol_sync_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation: digital.constellation_qpsk().base()
+    damping: '1.0'
+    loop_bw: '0.045'
+    max_dev: '1.5'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nfilters: '32'
+    osps: '1'
+    pfb_mf_taps: '[]'
+    resamp_type: digital.IR_MMSE_8TAP
+    sps: sps
+    ted_gain: '1'
+    ted_type: digital.TED_SIGNAL_TIMES_SLOPE_ML
+    type: cc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [456, 580.0]
+    rotation: 0
+    state: enabled
+- name: epy_block_0
+  id: epy_block
+  parameters:
+    _source_code: "import numpy as np\nfrom gnuradio import gr\n\nclass blk(gr.sync_block):\n\
+      \    def __init__(self, buffer_size=20000, max_offset=500, realign_interval=50000,\
+      \ periodic_realign=True):\n        gr.sync_block.__init__(\n            self,\n\
+      \            name='BER Calculator',\n            in_sig=[np.uint8, np.uint8],\n\
+      \            out_sig=[np.float32]\n        )\n        self.buffer_size = buffer_size\n\
+      \        self.max_offset = max_offset\n        self.realign_interval = realign_interval\n\
+      \        self.periodic_realign = periodic_realign\n        self.tx_buffer =\
+      \ np.array([], dtype=np.uint8)\n        self.rx_buffer = np.array([], dtype=np.uint8)\n\
+      \        self.synced = False\n        self.offset = 0\n        self.total_bits\
+      \ = 0\n        self.total_errors = 0\n        self.print_counter = 0\n     \
+      \   self.realign_counter = 0\n        self.last_ber = 0.0\n\n    def find_offset(self):\n\
+      \        correlation = np.correlate(\n            self.rx_buffer.astype(float),\n\
+      \            self.tx_buffer.astype(float),\n            mode='full'\n      \
+      \  )\n        center = len(self.tx_buffer) - 1\n        search = correlation[center\
+      \ - self.max_offset:center + self.max_offset]\n        return np.argmax(search)\
+      \ - self.max_offset\n\n    def align_buffers(self, offset):\n        if offset\
+      \ >= 0:\n            self.rx_buffer = self.rx_buffer[offset:]\n        else:\n\
+      \            self.tx_buffer = self.tx_buffer[-offset:]\n        print(f\"[BER\
+      \ Block] Aligned. Offset: {offset}\")\n\n    def work(self, input_items, output_items):\n\
+      \        tx_in = input_items[0]\n        rx_in = input_items[1]\n        n =\
+      \ len(tx_in)\n\n        self.tx_buffer = np.append(self.tx_buffer, tx_in)\n\
+      \        self.rx_buffer = np.append(self.rx_buffer, rx_in)\n\n        if not\
+      \ self.synced:\n            if len(self.tx_buffer) >= self.buffer_size:\n  \
+      \              offset = self.find_offset()\n                self.align_buffers(offset)\n\
+      \                self.synced = True\n                print(f\"[BER Block] Initial\
+      \ lock. Offset: {offset}\")\n\n        else:\n            min_len = min(len(self.tx_buffer),\
+      \ len(self.rx_buffer))\n            if min_len > 0:\n                errors\
+      \ = np.sum(self.tx_buffer[:min_len] != self.rx_buffer[:min_len])\n         \
+      \       self.total_errors += errors\n                self.total_bits += min_len\n\
+      \                self.realign_counter += min_len\n\n                self.tx_buffer\
+      \ = self.tx_buffer[min_len:]\n                self.rx_buffer = self.rx_buffer[min_len:]\n\
+      \n                self.print_counter += min_len\n                if self.print_counter\
+      \ >= 1000:\n                    self.last_ber = self.total_errors / self.total_bits\n\
+      \                    print(f\"[BER Block] BER: {self.last_ber:.6f}\")\n    \
+      \                self.print_counter = 0\n                    self.total_bits\
+      \ = 0\n                    self.total_errors = 0\n\n                # Periodically\
+      \ re-align only if enabled\n                if self.periodic_realign and self.realign_counter\
+      \ >= self.realign_interval:\n                    self.realign_counter = 0\n\
+      \                    self.synced = False\n                    self.tx_buffer\
+      \ = np.array([], dtype=np.uint8)\n                    self.rx_buffer = np.array([],\
+      \ dtype=np.uint8)\n                    print(f\"[BER Block] Re-aligning...\"\
+      )\n\n        output_items[0][:n] = self.last_ber\n        return n"
+    affinity: ''
+    alias: ''
+    buffer_size: '20000'
+    comment: ''
+    max_offset: '500'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    periodic_realign: 'False'
+    realign_interval: '50000'
+  states:
+    _io_cache: ('BER Calculator', 'blk', [('buffer_size', '20000'), ('max_offset',
+      '500'), ('realign_interval', '50000'), ('periodic_realign', 'True')], [('0',
+      'byte', 1), ('1', 'byte', 1)], [('0', 'float', 1)], '', ['buffer_size', 'max_offset',
+      'periodic_realign', 'realign_interval'])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1144, 1064.0]
+    rotation: 0
+    state: disabled
+- name: epy_block_1
+  id: epy_block
+  parameters:
+    _source_code: "import numpy as np\nfrom gnuradio import gr\n\n\nclass blk(gr.sync_block):\n\
+      \    \"\"\"\n    Continuous random byte source.\n\n    Output:\n      uint8\
+      \ stream, values 0 to 255 inclusive.\n    \"\"\"\n\n    def __init__(self, seed=0):\n\
+      \        gr.sync_block.__init__(\n            self,\n            name=\"Continuous\
+      \ Random Byte Source\",\n            in_sig=None,\n            out_sig=[np.uint8],\n\
+      \        )\n\n        # seed=0 means random/non-deterministic.\n        # Any\
+      \ nonzero seed gives repeatable output across runs.\n        if int(seed) ==\
+      \ 0:\n            self.rng = np.random.default_rng()\n        else:\n      \
+      \      self.rng = np.random.default_rng(int(seed))\n\n    def work(self, input_items,\
+      \ output_items):\n        out = output_items[0]\n        n = len(out)\n\n  \
+      \      out[:] = self.rng.integers(\n            low=0,\n            high=256,\
+      \       # exclusive upper bound\n            size=n,\n            dtype=np.uint8,\n\
+      \        )\n\n        return n\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    seed: '0'
+  states:
+    _io_cache: ('Continuous Random Byte Source', 'blk', [('seed', '0')], [], [('0',
+      'byte', 1)], '\nContinuous random byte source.\n\nOutput:\n  uint8 stream, values
+      0 to 255 inclusive.\n', [])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [32, 352.0]
+    rotation: 0
+    state: enabled
+- name: import_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import math
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [336, 16.0]
+    rotation: 0
+    state: enabled
+- name: import_0_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import numpy
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [320, 96.0]
+    rotation: 0
+    state: enabled
+- name: low_pass_filter_0
+  id: low_pass_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '6.76'
+    comment: ''
+    cutoff_freq: samp_rate/sps/2*(1+alpha)*2.0
+    decim: '1'
+    gain: '1'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    type: fir_filter_ccf
+    width: samp_rate/sps/2*(1+alpha)*0.5
+    win: window.WIN_HAMMING
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1312, 272.0]
+    rotation: 0
+    state: bypassed
+- name: qtgui_const_sink_x_0
+  id: qtgui_const_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    grid: 'False'
+    gui_hint: ''
+    label1: Uncorrected
+    label10: ''
+    label2: Costas Loop
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: '0'
+    marker10: '0'
+    marker2: '0'
+    marker3: '0'
+    marker4: '0'
+    marker5: '0'
+    marker6: '0'
+    marker7: '0'
+    marker8: '0'
+    marker9: '0'
+    name: '""'
+    nconnections: '2'
+    size: '1024'
+    style1: '0'
+    style10: '0'
+    style2: '0'
+    style3: '0'
+    style4: '0'
+    style5: '0'
+    style6: '0'
+    style7: '0'
+    style8: '0'
+    style9: '0'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: complex
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    xmax: '3'
+    xmin: '-3'
+    ymax: '3'
+    ymin: '-3'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1296, 520.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_time_sink_x_0
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'False'
+    entags: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label1: Signal 1
+    label10: Signal 10
+    label2: Signal 2
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '""'
+    nconnections: '1'
+    size: '1024'
+    srate: samp_rate
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: BER
+    ymax: '1'
+    ymin: '-0.001'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1360, 1056.0]
+    rotation: 0
+    state: disabled
+- name: root_raised_cosine_filter_0
+  id: root_raised_cosine_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha: alpha
+    comment: ''
+    decim: '1'
+    gain: '1'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    ntaps: 11*sps
+    samp_rate: samp_rate
+    sym_rate: samp_rate / sps
+    type: fir_filter_ccf
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1520, 288.0]
+    rotation: 0
+    state: enabled
+- name: soapy_bladerf_sink_0
+  id: soapy_bladerf_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bandwidth: '0.0'
+    center_freq: center_freq
+    comment: ''
+    dev_args: ''
+    freq_correction: '0'
+    gain: Tx_gain
+    samp_rate: samp_rate
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [784, 424.0]
+    rotation: 0
+    state: disabled
+- name: soapy_bladerf_source_0
+  id: soapy_bladerf_source
+  parameters:
+    affinity: ''
+    alias: ''
+    bandwidth: '0.0'
+    center_freq: center_freq
+    comment: ''
+    dev_args: ''
+    freq_correction: '0'
+    gain: Rx_gain
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1072, 408.0]
+    rotation: 0
+    state: disabled
+- name: soapy_plutosdr_sink_0
+  id: soapy_plutosdr_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bandwidth: '0.0'
+    center_freq: center_freq
+    comment: ''
+    dev_args: ''
+    gain: Tx_gain
+    samp_rate: samp_rate
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [752, 328.0]
+    rotation: 0
+    state: enabled
+- name: soapy_plutosdr_source_0_0
+  id: soapy_plutosdr_source
+  parameters:
+    affinity: ''
+    agc: 'False'
+    alias: ''
+    bandwidth: '0.0'
+    center_freq: center_freq
+    comment: ''
+    dev_args: ''
+    gain: Rx_gain
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1072, 328.0]
+    rotation: 0
+    state: enabled
+- name: virtual_sink_0
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: rx_signal_filtered
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1784, 312.0]
+    rotation: 0
+    state: enabled
+- name: virtual_sink_0_0
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: input_bits
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [24, 456.0]
+    rotation: 0
+    state: disabled
+- name: virtual_sink_1
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: decoded_signal
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1664, 696.0]
+    rotation: 0
+    state: enabled
+- name: virtual_sink_2
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: test
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [816, 488.0]
+    rotation: 0
+    state: disabled
+- name: virtual_source_0
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: rx_signal_filtered
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [192, 616.0]
+    rotation: 0
+    state: enabled
+- name: virtual_source_1
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: decoded_signal
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [176, 952.0]
+    rotation: 0
+    state: enabled
+- name: virtual_source_2
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: input_bits
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [304, 1120.0]
+    rotation: 0
+    state: disabled
+- name: virtual_source_3
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: test
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1088, 488.0]
+    rotation: 0
+    state: disabled
+
+connections:
+- [analog_random_uniform_source_x_0, '0', blocks_head_0, '0']
+- [analog_random_uniform_source_x_0, '0', blocks_throttle2_0_0_0_0, '0']
+- [blocks_head_0, '0', blocks_throttle2_0_0_0_0, '0']
+- [blocks_throttle2_0_0_0_0, '0', blocks_unpack_k_bits_bb_2, '0']
+- [blocks_throttle2_0_0_0_0, '0', digital_constellation_modulator_0, '0']
+- [blocks_throttle2_0_0_0_0, '0', virtual_sink_0_0, '0']
+- [blocks_unpack_k_bits_bb_0, '0', blocks_file_sink_0_0, '0']
+- [blocks_unpack_k_bits_bb_1, '0', epy_block_0, '1']
+- [blocks_unpack_k_bits_bb_2, '0', blocks_file_sink_0, '0']
+- [digital_constellation_decoder_cb_0, '0', virtual_sink_1, '0']
+- [digital_constellation_modulator_0, '0', soapy_bladerf_sink_0, '0']
+- [digital_constellation_modulator_0, '0', soapy_plutosdr_sink_0, '0']
+- [digital_constellation_modulator_0, '0', virtual_sink_2, '0']
+- [digital_costas_loop_cc_0, '0', digital_constellation_decoder_cb_0, '0']
+- [digital_costas_loop_cc_0, '0', qtgui_const_sink_x_0, '1']
+- [digital_diff_decoder_bb_0, '0', digital_map_bb_0, '0']
+- [digital_map_bb_0, '0', blocks_unpack_k_bits_bb_0, '0']
+- [digital_symbol_sync_xx_0, '0', digital_costas_loop_cc_0, '0']
+- [digital_symbol_sync_xx_0, '0', qtgui_const_sink_x_0, '0']
+- [epy_block_0, '0', qtgui_time_sink_x_0, '0']
+- [epy_block_1, '0', blocks_throttle2_0_0_0_0, '0']
+- [low_pass_filter_0, '0', root_raised_cosine_filter_0, '0']
+- [root_raised_cosine_filter_0, '0', virtual_sink_0, '0']
+- [soapy_bladerf_source_0, '0', low_pass_filter_0, '0']
+- [soapy_plutosdr_source_0_0, '0', low_pass_filter_0, '0']
+- [virtual_source_0, '0', digital_symbol_sync_xx_0, '0']
+- [virtual_source_1, '0', digital_diff_decoder_bb_0, '0']
+- [virtual_source_2, '0', blocks_unpack_k_bits_bb_1, '0']
+- [virtual_source_3, '0', low_pass_filter_0, '0']
+
+metadata:
+  file_format: 1
+  grc_version: 3.10.12.0

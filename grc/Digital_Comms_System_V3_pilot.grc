@@ -1,0 +1,1020 @@
+options:
+  parameters:
+    author: tom
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: backup
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: Not titled yet
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: QPSK_constellation
+  id: variable_constellation
+  parameters:
+    comment: ''
+    const_points: '[-1-1j, -1+1j, 1+1j, 1-1j]'
+    dims: '1'
+    normalization: digital.constellation.AMPLITUDE_NORMALIZATION
+    npwr: '1.0'
+    precision: '8'
+    rot_sym: '4'
+    soft_dec_lut: None
+    sym_map: '[0, 1, 3, 2]'
+    type: calcdist
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [584, 32.0]
+    rotation: 0
+    state: enabled
+- name: alpha
+  id: variable
+  parameters:
+    comment: ''
+    value: '0.5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [808, 48.0]
+    rotation: 0
+    state: enabled
+- name: center_freq
+  id: variable
+  parameters:
+    comment: ''
+    value: 1000e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [464, 152.0]
+    rotation: 0
+    state: enabled
+- name: fc
+  id: variable
+  parameters:
+    comment: ''
+    value: '200000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1352, 72.0]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: was 800k
+    value: 1e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [200, 64.0]
+    rotation: 0
+    state: enabled
+- name: sps
+  id: variable
+  parameters:
+    comment: ''
+    value: '8'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [480, 64.0]
+    rotation: 0
+    state: enabled
+- name: analog_random_uniform_source_x_0
+  id: analog_random_uniform_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: 'instead of this, have a set pilor signal?
+
+      Also: Pluto -> bladeRF and bladeRF->Pluto'
+    maximum: '256'
+    maxoutbuf: '0'
+    minimum: '0'
+    minoutbuf: '0'
+    seed: '0'
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [56, 240.0]
+    rotation: 0
+    state: disabled
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: ber_src
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [528, 432.0]
+    rotation: 0
+    state: disabled
+- name: blocks_file_sink_1
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: pilot_rx_bits.txt
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1160, 904.0]
+    rotation: 0
+    state: enabled
+- name: blocks_skiphead_0
+  id: blocks_skiphead
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: 775*8
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [944, 928.0]
+    rotation: 0
+    state: enabled
+- name: blocks_throttle2_0_0_0_0
+  id: blocks_throttle2
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    limit: auto
+    maximum: '0.1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [272, 320.0]
+    rotation: 0
+    state: enabled
+- name: blocks_unpack_k_bits_bb_0
+  id: blocks_unpack_k_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '2'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [768, 952.0]
+    rotation: 0
+    state: enabled
+- name: blocks_unpack_k_bits_bb_2
+  id: blocks_unpack_k_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '8'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [376, 448.0]
+    rotation: 0
+    state: disabled
+- name: digital_constellation_decoder_cb_0
+  id: digital_constellation_decoder_cb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation: QPSK_constellation
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1432, 696.0]
+    rotation: 0
+    state: enabled
+- name: digital_constellation_modulator_0
+  id: digital_constellation_modulator
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation: QPSK_constellation
+    differential: 'True'
+    excess_bw: alpha
+    log: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_symbol: sps
+    truncate: 'False'
+    verbose: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [472, 304.0]
+    rotation: 0
+    state: enabled
+- name: digital_costas_loop_cc_0
+  id: digital_costas_loop_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    order: '4'
+    use_snr: 'False'
+    w: 2*math.pi/100
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1080, 656.0]
+    rotation: 0
+    state: enabled
+- name: digital_diff_decoder_bb_0
+  id: digital_diff_decoder_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    coding: digital.DIFF_DIFFERENTIAL
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    modulus: '4'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [416, 944.0]
+    rotation: 0
+    state: enabled
+- name: digital_map_bb_0
+  id: digital_map_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    map: '[0, 1, 3, 2]'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [616, 952.0]
+    rotation: 0
+    state: enabled
+- name: digital_symbol_sync_xx_0
+  id: digital_symbol_sync_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation: digital.constellation_qpsk().base()
+    damping: '1.0'
+    loop_bw: '0.045'
+    max_dev: '1.5'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nfilters: '32'
+    osps: '1'
+    pfb_mf_taps: '[]'
+    resamp_type: digital.IR_MMSE_8TAP
+    sps: sps
+    ted_gain: '1'
+    ted_type: digital.TED_SIGNAL_TIMES_SLOPE_ML
+    type: cc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [456, 580.0]
+    rotation: 0
+    state: enabled
+- name: epy_block_1
+  id: epy_block
+  parameters:
+    _source_code: "import numpy as np\nfrom gnuradio import gr\n\n\nclass blk(gr.sync_block):\n\
+      \    \"\"\"\n    Repeating byte source:\n      0, 1, 2, ..., 255, 0, 1, ...\n\
+      \    \"\"\"\n\n    def __init__(self):\n        gr.sync_block.__init__(\n  \
+      \          self,\n            name=\"Repeating 0-255 Byte Source\",\n      \
+      \      in_sig=None,\n            out_sig=[np.uint8],\n        )\n\n        self.index\
+      \ = 0\n\n    def work(self, input_items, output_items):\n        out = output_items[0]\n\
+      \        n = len(out)\n\n        out[:] = (self.index + np.arange(n)) % 256\n\
+      \        self.index = (self.index + n) % 256\n\n        return n\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    _io_cache: ('Repeating 0-255 Byte Source', 'blk', [], [], [('0', 'byte', 1)],
+      '\nRepeating byte source:\n  0, 1, 2, ..., 255, 0, 1, ...\n', [])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 336.0]
+    rotation: 0
+    state: enabled
+- name: epy_block_2
+  id: epy_block
+  parameters:
+    _source_code: "import numpy as np\nfrom gnuradio import gr\nfrom collections import\
+      \ deque\n\n\nclass blk(gr.sync_block):\n    \"\"\"\n    Real-time BER calculator\
+      \ for repeated byte pilot:\n\n        0, 1, 2, ..., 255, 0, 1, 2, ...\n\n  \
+      \  BUT input is an unpacked bit stream:\n\n        in0: uint8 stream, values\
+      \ 0 or 1\n             one bit per byte, i.e. GNU Radio \"purple\" byte stream\n\
+      \n    Output:\n        out0: float32 BER estimate\n\n    This block does NOT\
+      \ need a TX input.\n    It regenerates the expected 0..255 pilot internally,\
+      \ unpacks it into bits,\n    finds the bit-level phase offset, then compares\
+      \ bit-by-bit.\n\n    bitorder:\n        \"big\"    = MSB first, matches np.unpackbits(...,\
+      \ bitorder=\"big\")\n        \"little\" = LSB first\n        \"auto\"   = try\
+      \ both during sync and use the better one\n    \"\"\"\n\n    def __init__(\n\
+      \        self,\n        sync_buffer_size=4096,\n        report_every=8000,\n\
+      \        window_size=80000,\n        realign_interval=200000,\n        periodic_realign=True,\n\
+      \        bitorder=\"auto\",\n    ):\n        gr.sync_block.__init__(\n     \
+      \       self,\n            name=\"Pilot BER Calculator Bits 0-255\",\n     \
+      \       in_sig=[np.uint8],\n            out_sig=[np.float32],\n        )\n\n\
+      \        self.sync_buffer_size = int(sync_buffer_size)\n        self.report_every\
+      \ = int(report_every)\n        self.window_size = int(window_size)\n       \
+      \ self.realign_interval = int(realign_interval)\n        self.periodic_realign\
+      \ = bool(periodic_realign)\n        self.bitorder = str(bitorder)\n\n      \
+      \  if self.sync_buffer_size <= 0:\n            raise ValueError(\"sync_buffer_size\
+      \ must be positive\")\n\n        if self.bitorder not in [\"big\", \"little\"\
+      , \"auto\"]:\n            raise ValueError('bitorder must be \"big\", \"little\"\
+      , or \"auto\"')\n\n        # Byte pilot: 0, 1, 2, ..., 255\n        self.byte_pilot\
+      \ = np.arange(256, dtype=np.uint8)\n\n        # Bit pilots. Each has length\
+      \ 256 * 8 = 2048 bits.\n        self.bit_pilots = {\n            \"big\": np.unpackbits(self.byte_pilot,\
+      \ bitorder=\"big\").astype(np.uint8),\n            \"little\": np.unpackbits(self.byte_pilot,\
+      \ bitorder=\"little\").astype(np.uint8),\n        }\n\n        self.active_bitorder\
+      \ = None\n        self.pilot_bits = None\n        self.pilot_len_bits = None\n\
+      \n        self.rx_buffer = np.array([], dtype=np.uint8)\n\n        self.synced\
+      \ = False\n        self.pilot_bit_index = 0\n        self.last_ber = 0.0\n\n\
+      \        self.bits_since_report = 0\n        self.bits_since_realign = 0\n\n\
+      \        self.window = deque()\n        self.window_error_sum = 0\n        self.window_bit_sum\
+      \ = 0\n\n    def make_expected_bits(self, start_index, n):\n        positions\
+      \ = (start_index + np.arange(n)) % self.pilot_len_bits\n        return self.pilot_bits[positions]\n\
+      \n    def find_pilot_offset_for_order(self, rx, order):\n        \"\"\"\n  \
+      \      Try all bit offsets inside one full pilot period.\n\n        Returns:\n\
+      \            best_offset, best_errors\n        \"\"\"\n        pilot = self.bit_pilots[order]\n\
+      \        period = len(pilot)\n\n        best_offset = 0\n        best_errors\
+      \ = None\n\n        # Try all 2048 possible bit-level offsets\n        for offset\
+      \ in range(period):\n            positions = (offset + np.arange(len(rx))) %\
+      \ period\n            expected = pilot[positions]\n\n            errors = int(np.sum(rx\
+      \ != expected))\n\n            if best_errors is None or errors < best_errors:\n\
+      \                best_errors = errors\n                best_offset = offset\n\
+      \n        return best_offset, best_errors\n\n    def find_pilot_offset(self,\
+      \ rx):\n        \"\"\"\n        Finds:\n          1. bit order, if bitorder=\"\
+      auto\"\n          2. bit offset within the 2048-bit repeated pilot\n       \
+      \ \"\"\"\n        rx = rx & 0x01\n\n        if self.bitorder == \"auto\":\n\
+      \            orders_to_try = [\"big\", \"little\"]\n        else:\n        \
+      \    orders_to_try = [self.bitorder]\n\n        best_order = None\n        best_offset\
+      \ = None\n        best_errors = None\n\n        for order in orders_to_try:\n\
+      \            offset, errors = self.find_pilot_offset_for_order(rx, order)\n\n\
+      \            if best_errors is None or errors < best_errors:\n             \
+      \   best_errors = errors\n                best_offset = offset\n           \
+      \     best_order = order\n\n        self.active_bitorder = best_order\n    \
+      \    self.pilot_bits = self.bit_pilots[best_order]\n        self.pilot_len_bits\
+      \ = len(self.pilot_bits)\n\n        sync_ber = best_errors / len(rx)\n\n   \
+      \     print(\n            f\"[Pilot BER Bits] Sync search: \"\n            f\"\
+      bitorder={best_order}, \"\n            f\"best bit offset={best_offset}, \"\n\
+      \            f\"sync BER={sync_ber:.6f}\"\n        )\n\n        return best_offset\n\
+      \n    def add_window_result(self, errors, bits):\n        self.window.append((int(errors),\
+      \ int(bits)))\n        self.window_error_sum += int(errors)\n        self.window_bit_sum\
+      \ += int(bits)\n\n        while self.window_bit_sum > self.window_size and len(self.window)\
+      \ > 1:\n            old_errors, old_bits = self.window.popleft()\n         \
+      \   self.window_error_sum -= old_errors\n            self.window_bit_sum -=\
+      \ old_bits\n\n    def current_window_ber(self):\n        if self.window_bit_sum\
+      \ == 0:\n            return 0.0\n        return self.window_error_sum / self.window_bit_sum\n\
+      \n    def process_rx_bits(self, rx_bits):\n        n = len(rx_bits)\n      \
+      \  if n == 0:\n            return\n\n        rx_bits = rx_bits & 0x01\n    \
+      \    expected = self.make_expected_bits(self.pilot_bit_index, n)\n\n       \
+      \ errors = int(np.sum(rx_bits != expected))\n        bits = n\n\n        self.add_window_result(errors,\
+      \ bits)\n\n        self.pilot_bit_index = (self.pilot_bit_index + n) % self.pilot_len_bits\n\
+      \n        self.bits_since_report += bits\n        self.bits_since_realign +=\
+      \ bits\n\n        if self.bits_since_report >= self.report_every:\n        \
+      \    self.last_ber = self.current_window_ber()\n            print(\n       \
+      \         f\"[Pilot BER Bits] BER = {self.last_ber:.6f}, \"\n              \
+      \  f\"bitorder={self.active_bitorder}, \"\n                f\"pilot_bit_index={self.pilot_bit_index},\
+      \ \"\n                f\"window={self.window_error_sum}/{self.window_bit_sum}\
+      \ bits\"\n            )\n            self.bits_since_report = 0\n\n    def reset_sync(self):\n\
+      \        self.synced = False\n        self.rx_buffer = np.array([], dtype=np.uint8)\n\
+      \        self.bits_since_realign = 0\n        print(\"[Pilot BER Bits] Re-aligning...\"\
+      )\n\n    def work(self, input_items, output_items):\n        rx_in = np.asarray(input_items[0],\
+      \ dtype=np.uint8)\n        out = output_items[0]\n        n = len(rx_in)\n\n\
+      \        # Sanity warning, sampled lightly\n        if n > 0:\n            sample\
+      \ = rx_in[:min(n, 1024)]\n            unique = np.unique(sample)\n         \
+      \   if not np.all((unique == 0) | (unique == 1)):\n                print(\n\
+      \                    \"[Pilot BER Bits WARNING] Input is not purely 0/1. \"\n\
+      \                    f\"Unique sample values: {unique[:20]}\"\n            \
+      \    )\n\n        if not self.synced:\n            self.rx_buffer = np.concatenate((self.rx_buffer,\
+      \ (rx_in & 0x01).copy()))\n\n            if len(self.rx_buffer) >= self.sync_buffer_size:\n\
+      \                sync_rx = self.rx_buffer[:self.sync_buffer_size]\n\n      \
+      \          offset = self.find_pilot_offset(sync_rx)\n\n                self.synced\
+      \ = True\n                self.pilot_bit_index = offset\n\n                print(\n\
+      \                    f\"[Pilot BER Bits] Initial lock: \"\n                \
+      \    f\"rx_buffer[0] aligned to pilot bit {offset} \"\n                    f\"\
+      using bitorder={self.active_bitorder}\"\n                )\n\n             \
+      \   # Process all buffered samples, including sync buffer\n                buffered\
+      \ = self.rx_buffer\n                self.rx_buffer = np.array([], dtype=np.uint8)\n\
+      \                self.process_rx_bits(buffered)\n\n        else:\n         \
+      \   self.process_rx_bits(rx_in)\n\n            if self.periodic_realign and\
+      \ self.bits_since_realign >= self.realign_interval:\n                self.reset_sync()\n\
+      \n        out[:] = self.last_ber\n        return n\n"
+    affinity: ''
+    alias: ''
+    bitorder: '"auto"'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    periodic_realign: 'True'
+    realign_interval: '200000'
+    report_every: 8000*2
+    sync_buffer_size: '4096'
+    window_size: '80000'
+  states:
+    _io_cache: '(''Pilot BER Calculator Bits 0-255'', ''blk'', [(''sync_buffer_size'',
+      ''4096''), (''report_every'', ''8000''), (''window_size'', ''80000''), (''realign_interval'',
+      ''200000''), (''periodic_realign'', ''True''), (''bitorder'', "''auto''")],
+      [(''0'', ''byte'', 1)], [(''0'', ''float'', 1)], ''\nReal-time BER calculator
+      for repeated byte pilot:\n\n    0, 1, 2, ..., 255, 0, 1, 2, ...\n\nBUT input
+      is an unpacked bit stream:\n\n    in0: uint8 stream, values 0 or 1\n         one
+      bit per byte, i.e. GNU Radio "purple" byte stream\n\nOutput:\n    out0: float32
+      BER estimate\n\nThis block does NOT need a TX input.\nIt regenerates the expected
+      0..255 pilot internally, unpacks it into bits,\nfinds the bit-level phase offset,
+      then compares bit-by-bit.\n\nbitorder:\n    "big"    = MSB first, matches np.unpackbits(...,
+      bitorder="big")\n    "little" = LSB first\n    "auto"   = try both during sync
+      and use the better one\n'', [''bitorder'', ''periodic_realign'', ''realign_interval'',
+      ''report_every'', ''sync_buffer_size'', ''window_size''])'
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1072, 984.0]
+    rotation: 0
+    state: disabled
+- name: import_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import math
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [336, 16.0]
+    rotation: 0
+    state: enabled
+- name: import_0_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import numpy
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [320, 96.0]
+    rotation: 0
+    state: enabled
+- name: low_pass_filter_0
+  id: low_pass_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '6.76'
+    comment: 'sps = 1 samp_rate = bandwidth
+
+      samp_rate / sps ~= bandwidth
+
+
+
+      Bandwith has to do with "squareness" of wave and samp_rate/sps
+
+
+      shaping is controlled by alpha
+
+
+      min(BW) = sps
+
+
+      BW = symbol_rate*(1+alpha)'
+    cutoff_freq: samp_rate/sps/2*(1+alpha)*2.0
+    decim: '1'
+    gain: '1'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    type: fir_filter_ccf
+    width: samp_rate/sps/2*(1+alpha)*0.5
+    win: window.WIN_HAMMING
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1312, 272.0]
+    rotation: 0
+    state: bypassed
+- name: qtgui_const_sink_x_0
+  id: qtgui_const_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    grid: 'False'
+    gui_hint: ''
+    label1: Uncorrected
+    label10: ''
+    label2: Costas Loop
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: '0'
+    marker10: '0'
+    marker2: '0'
+    marker3: '0'
+    marker4: '0'
+    marker5: '0'
+    marker6: '0'
+    marker7: '0'
+    marker8: '0'
+    marker9: '0'
+    name: '""'
+    nconnections: '2'
+    size: '1024'
+    style1: '0'
+    style10: '0'
+    style2: '0'
+    style3: '0'
+    style4: '0'
+    style5: '0'
+    style6: '0'
+    style7: '0'
+    style8: '0'
+    style9: '0'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: complex
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    xmax: '3'
+    xmin: '-3'
+    ymax: '3'
+    ymin: '-3'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1296, 520.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_sink_x_0
+  id: qtgui_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    bw: samp_rate
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    gui_hint: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '"transmitted signal"'
+    plotconst: 'True'
+    plotfreq: 'True'
+    plottime: 'True'
+    plotwaterfall: 'True'
+    rate: '10'
+    showports: 'False'
+    showrf: 'False'
+    type: complex
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [864, 296.0]
+    rotation: 0
+    state: disabled
+- name: qtgui_time_sink_x_0
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'False'
+    entags: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label1: Signal 1
+    label10: Signal 10
+    label2: Signal 2
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '""'
+    nconnections: '1'
+    size: '1024'
+    srate: samp_rate
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: BER
+    ymax: '1'
+    ymin: '-0.001'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1360, 1056.0]
+    rotation: 0
+    state: disabled
+- name: root_raised_cosine_filter_0
+  id: root_raised_cosine_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha: alpha
+    comment: ''
+    decim: '1'
+    gain: '1'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    ntaps: 11*sps
+    samp_rate: samp_rate
+    sym_rate: samp_rate / sps
+    type: fir_filter_ccf
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1520, 288.0]
+    rotation: 0
+    state: enabled
+- name: soapy_bladerf_sink_0
+  id: soapy_bladerf_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bandwidth: '0.0'
+    center_freq: center_freq
+    comment: ''
+    dev_args: ''
+    freq_correction: '0'
+    gain: '60'
+    samp_rate: samp_rate
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [784, 424.0]
+    rotation: 0
+    state: enabled
+- name: soapy_bladerf_source_0
+  id: soapy_bladerf_source
+  parameters:
+    affinity: ''
+    alias: ''
+    bandwidth: '0.0'
+    center_freq: center_freq
+    comment: ''
+    dev_args: ''
+    freq_correction: '0'
+    gain: '40'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1072, 408.0]
+    rotation: 0
+    state: enabled
+- name: soapy_plutosdr_sink_0
+  id: soapy_plutosdr_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bandwidth: '0.0'
+    center_freq: center_freq
+    comment: ''
+    dev_args: ''
+    gain: '68'
+    samp_rate: samp_rate
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [752, 328.0]
+    rotation: 0
+    state: disabled
+- name: soapy_plutosdr_source_0_0
+  id: soapy_plutosdr_source
+  parameters:
+    affinity: ''
+    agc: 'True'
+    alias: ''
+    bandwidth: '0.0'
+    center_freq: center_freq
+    comment: ''
+    dev_args: ''
+    gain: '60'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1072, 328.0]
+    rotation: 0
+    state: disabled
+- name: virtual_sink_0
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: rx_signal_filtered
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1784, 312.0]
+    rotation: 0
+    state: enabled
+- name: virtual_sink_1
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: decoded_signal
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1880, 760.0]
+    rotation: 0
+    state: enabled
+- name: virtual_sink_2
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: test
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [912, 504.0]
+    rotation: 0
+    state: disabled
+- name: virtual_source_0
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: rx_signal_filtered
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [192, 616.0]
+    rotation: 0
+    state: enabled
+- name: virtual_source_1
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: decoded_signal
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [176, 952.0]
+    rotation: 0
+    state: enabled
+- name: virtual_source_3
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: test
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1088, 488.0]
+    rotation: 0
+    state: disabled
+
+connections:
+- [analog_random_uniform_source_x_0, '0', blocks_throttle2_0_0_0_0, '0']
+- [blocks_skiphead_0, '0', blocks_file_sink_1, '0']
+- [blocks_throttle2_0_0_0_0, '0', blocks_unpack_k_bits_bb_2, '0']
+- [blocks_throttle2_0_0_0_0, '0', digital_constellation_modulator_0, '0']
+- [blocks_unpack_k_bits_bb_0, '0', blocks_skiphead_0, '0']
+- [blocks_unpack_k_bits_bb_0, '0', epy_block_2, '0']
+- [blocks_unpack_k_bits_bb_2, '0', blocks_file_sink_0, '0']
+- [digital_constellation_decoder_cb_0, '0', virtual_sink_1, '0']
+- [digital_constellation_modulator_0, '0', qtgui_sink_x_0, '0']
+- [digital_constellation_modulator_0, '0', soapy_bladerf_sink_0, '0']
+- [digital_constellation_modulator_0, '0', soapy_plutosdr_sink_0, '0']
+- [digital_constellation_modulator_0, '0', virtual_sink_2, '0']
+- [digital_costas_loop_cc_0, '0', digital_constellation_decoder_cb_0, '0']
+- [digital_costas_loop_cc_0, '0', qtgui_const_sink_x_0, '1']
+- [digital_diff_decoder_bb_0, '0', digital_map_bb_0, '0']
+- [digital_map_bb_0, '0', blocks_unpack_k_bits_bb_0, '0']
+- [digital_symbol_sync_xx_0, '0', digital_costas_loop_cc_0, '0']
+- [digital_symbol_sync_xx_0, '0', qtgui_const_sink_x_0, '0']
+- [epy_block_1, '0', blocks_throttle2_0_0_0_0, '0']
+- [epy_block_2, '0', qtgui_time_sink_x_0, '0']
+- [low_pass_filter_0, '0', root_raised_cosine_filter_0, '0']
+- [root_raised_cosine_filter_0, '0', virtual_sink_0, '0']
+- [soapy_bladerf_source_0, '0', low_pass_filter_0, '0']
+- [soapy_plutosdr_source_0_0, '0', low_pass_filter_0, '0']
+- [virtual_source_0, '0', digital_symbol_sync_xx_0, '0']
+- [virtual_source_1, '0', digital_diff_decoder_bb_0, '0']
+- [virtual_source_3, '0', low_pass_filter_0, '0']
+
+metadata:
+  file_format: 1
+  grc_version: 3.10.12.0
