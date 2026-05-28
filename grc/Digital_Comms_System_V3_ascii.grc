@@ -108,6 +108,69 @@ blocks:
     bus_structure: null
     coordinate: [1352, 72.0]
     rotation: 0
+    state: disabled
+- name: noise_frequency_offset
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '0.001'
+    stop: '0.2'
+    value: '0'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1544, 96.0]
+    rotation: 0
+    state: enabled
+- name: noise_timing_offset
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '1'
+    step: '0.0001'
+    stop: '1.1'
+    value: '1'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1696, 96.0]
+    rotation: 0
+    state: enabled
+- name: noise_voltage
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '0.1'
+    stop: '5'
+    value: '0'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1440, 96.0]
+    rotation: 0
     state: enabled
 - name: samp_rate
   id: variable
@@ -154,7 +217,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1272, 328.0]
+    coordinate: [1528, 280.0]
     rotation: 0
     state: enabled
 - name: analog_random_uniform_source_x_0
@@ -216,9 +279,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1160, 904.0]
+    coordinate: [1160, 1152.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_skiphead_0
   id: blocks_skiphead
   parameters:
@@ -234,7 +297,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [944, 928.0]
+    coordinate: [944, 952.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle2_0_0_0_0
@@ -290,6 +353,27 @@ blocks:
     coordinate: [376, 448.0]
     rotation: 0
     state: disabled
+- name: channels_channel_model_0
+  id: channels_channel_model
+  parameters:
+    affinity: ''
+    alias: ''
+    block_tags: 'False'
+    comment: ''
+    epsilon: noise_timing_offset
+    freq_offset: noise_frequency_offset
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    noise_voltage: noise_voltage
+    seed: '0'
+    taps: '1.0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1312, 304.0]
+    rotation: 0
+    state: enabled
 - name: digital_constellation_decoder_cb_0
   id: digital_constellation_decoder_cb
   parameters:
@@ -404,6 +488,110 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [456, 580.0]
+    rotation: 0
+    state: enabled
+- name: epy_block_0
+  id: epy_block
+  parameters:
+    _source_code: "import numpy as np\nfrom gnuradio import gr\n\nPILOT_LEN = 256\n\
+      \ndef pack_bits_with_offset(bits, bit_offset, bitorder):\n    trimmed = bits[bit_offset:]\n\
+      \    n_bytes = len(trimmed) // 8\n    if n_bytes == 0:\n        return np.array([],\
+      \ dtype=np.uint8)\n    usable = trimmed[:n_bytes * 8]\n    return np.packbits(usable,\
+      \ bitorder=bitorder)\n\ndef is_increasing_mod256(packed, min_run=16):\n    \"\
+      \"\"\n    Check if packed bytes look like the repeating 0..255 ramp.\n    Returns\
+      \ fraction of consecutive pairs that are +1 mod 256.\n    \"\"\"\n    if len(packed)\
+      \ < 2:\n        return 0.0\n    expected_next = ((packed[:-1].astype(np.uint16)\
+      \ + 1) % 256).astype(np.uint8)\n    good = np.sum(packed[1:] == expected_next)\n\
+      \    return good / (len(packed) - 1)\n\ndef find_best_alignment(bits, min_run=16):\n\
+      \    \"\"\"\n    Try all 8 bit offsets x 2 bit orders = 16 combinations.\n \
+      \   Returns (best_bit_offset, best_bitorder, best_byte_phase) or None.\n   \
+      \ \"\"\"\n    best = None\n    best_score = 0.0\n\n    for bitorder in ['big',\
+      \ 'little']:\n        for bit_offset in range(8):\n            packed = pack_bits_with_offset(bits,\
+      \ bit_offset, bitorder)\n            if len(packed) < min_run:\n           \
+      \     continue\n            score = is_increasing_mod256(packed)\n         \
+      \   if score > best_score:\n                # find byte phase: which value does\
+      \ the sequence start at?\n                best_score = score\n             \
+      \   # estimate byte phase from first byte\n                byte_phase = int(packed[0])\n\
+      \                best = (bit_offset, bitorder, byte_phase, score)\n\n    return\
+      \ best  # None if nothing found\n\n\nclass blk(gr.sync_block):\n    def __init__(self,\
+      \ buffer_size=20000, realign_interval=50000, periodic_realign=True, score_threshold=0.8,\
+      \ stats_reset_interval=1000):\n        gr.sync_block.__init__(\n           \
+      \ self,\n            name='BER Calculator',\n            in_sig=[np.uint8],\
+      \       # unpacked bit stream (0s and 1s)\n            out_sig=[np.float32,\
+      \ np.float32]  # [BER, byte error rate]\n        )\n        self.buffer_size\
+      \ = buffer_size\n        self.realign_interval = realign_interval\n        self.periodic_realign\
+      \ = periodic_realign\n        self.score_threshold = score_threshold\n\n   \
+      \     self.bit_buffer = np.array([], dtype=np.uint8)\n\n        self.synced\
+      \ = False\n        self.bit_offset = 0\n        self.bitorder = 'big'\n    \
+      \    self.byte_phase = 0         # which value in 0..255 we expect next\n\n\
+      \        self.total_bits = 0\n        self.total_bit_errors = 0\n        self.total_bytes\
+      \ = 0\n        self.total_byte_errors = 0\n\n        self.print_counter = 0\n\
+      \        self.realign_counter = 0\n        self.last_ber = 0.0\n        self.last_byter\
+      \ = 0.0\n\n        self.stats_reset_interval = stats_reset_interval\n\n    def\
+      \ try_align(self):\n        result = find_best_alignment(self.bit_buffer)\n\
+      \        if result is None:\n            print(\"[BER] Could not find alignment.\"\
+      )\n            return False\n        bit_offset, bitorder, byte_phase, score\
+      \ = result\n        if score < self.score_threshold:\n            print(f\"\
+      [BER] Best alignment score {score:.3f} below threshold {self.score_threshold}.\
+      \ Not locking.\")\n            return False\n        self.bit_offset = bit_offset\n\
+      \        self.bitorder = bitorder\n        self.byte_phase = byte_phase\n  \
+      \      # consume the bits used for alignment\n        self.bit_buffer = self.bit_buffer[bit_offset:]\n\
+      \        print(f\"[BER] Locked. bit_offset={bit_offset} bitorder={bitorder}\
+      \ byte_phase={byte_phase} score={score:.4f}\")\n        return True\n\n    def\
+      \ work(self, input_items, output_items):\n        bits_in = input_items[0]\n\
+      \        n = len(bits_in)\n\n        self.bit_buffer = np.append(self.bit_buffer,\
+      \ bits_in)\n\n        if not self.synced:\n            if len(self.bit_buffer)\
+      \ >= self.buffer_size:\n                self.synced = self.try_align()\n   \
+      \             if not self.synced:\n                    # discard half the buffer\
+      \ and try again next time\n                    self.bit_buffer = self.bit_buffer[self.buffer_size\
+      \ // 2:]\n\n        else:\n            # pack available bits into bytes using\
+      \ locked alignment\n            n_bytes = len(self.bit_buffer) // 8\n      \
+      \      if n_bytes > 0:\n                usable = self.bit_buffer[:n_bytes *\
+      \ 8]\n                packed = np.packbits(usable, bitorder=self.bitorder)\n\
+      \                self.bit_buffer = self.bit_buffer[n_bytes * 8:]\n\n       \
+      \         # build expected ramp\n                expected = ((self.byte_phase\
+      \ + np.arange(n_bytes)) % PILOT_LEN).astype(np.uint8)\n                self.byte_phase\
+      \ = int((self.byte_phase + n_bytes) % PILOT_LEN)\n\n                # byte errors\n\
+      \                byte_errors = int(np.sum(packed != expected))\n           \
+      \     self.total_bytes += n_bytes\n                self.total_byte_errors +=\
+      \ byte_errors\n\n                # bit errors\n                xor = np.bitwise_xor(packed,\
+      \ expected)\n                bit_errors = int(np.sum(np.unpackbits(xor)))\n\
+      \                self.total_bits += n_bytes * 8\n                self.total_bit_errors\
+      \ += bit_errors\n\n                self.realign_counter += n_bytes\n       \
+      \         self.print_counter += n_bytes\n\n                if self.print_counter\
+      \ >= self.stats_reset_interval:\n                    self.last_ber = self.total_bit_errors\
+      \ / self.total_bits if self.total_bits else 0.0\n                    self.last_byter\
+      \ = self.total_byte_errors / self.total_bytes if self.total_bytes else 0.0\n\
+      \                    print(f\"[BER] BER={self.last_ber:.6f}  ByteER={self.last_byter:.6f}\
+      \  bits={self.total_bits}  bytes={self.total_bytes}\")\n                   \
+      \ self.print_counter = 0\n                    self.total_bits = 0\n        \
+      \            self.total_bit_errors = 0\n                    self.total_bytes\
+      \ = 0\n                    self.total_byte_errors = 0\n\n                if\
+      \ self.periodic_realign and self.realign_counter >= self.realign_interval:\n\
+      \                    self.realign_counter = 0\n                    self.synced\
+      \ = False\n                    self.bit_buffer = np.array([], dtype=np.uint8)\n\
+      \                    print(\"[BER] Re-aligning...\")\n\n        output_items[0][:n]\
+      \ = self.last_ber\n        output_items[1][:n] = self.last_byter\n        return\
+      \ n\n"
+    affinity: ''
+    alias: ''
+    buffer_size: '20000'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    periodic_realign: 'True'
+    realign_interval: '50000'
+    score_threshold: '0.8'
+    stats_reset_interval: '1000'
+  states:
+    _io_cache: ('BER Calculator', 'blk', [('buffer_size', '20000'), ('realign_interval',
+      '50000'), ('periodic_realign', 'True'), ('score_threshold', '0.8'), ('stats_reset_interval',
+      '1000')], [('0', 'byte', 1)], [('0', 'float', 1), ('1', 'float', 1)], '', ['buffer_size',
+      'periodic_realign', 'realign_interval', 'score_threshold', 'stats_reset_interval'])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1128, 928.0]
     rotation: 0
     state: enabled
 - name: epy_block_1
@@ -567,6 +755,66 @@ blocks:
     coordinate: [1072, 1048.0]
     rotation: 0
     state: disabled
+- name: epy_block_3
+  id: epy_block
+  parameters:
+    _source_code: "import numpy as np\nfrom gnuradio import gr\nimport csv\nimport\
+      \ os\nimport time\nfrom datetime import datetime\n\nCSV_FILE = \"V3_noise_vs_ber.csv\"\
+      \nLOG_INTERVAL = 0.8  # seconds between each periodic snapshot\n\nclass blk(gr.sync_block):\n\
+      \    \"\"\"\n    Records BER vs noise parameters to a CSV file periodically.\n\
+      \    Every LOG_INTERVAL seconds, snapshots the current parameters and BER.\n\
+      \n    Inputs:\n        in0: float32 BER estimate (from BER Calculator block)\n\
+      \n    Parameters:\n        noise_voltage:       TX noise voltage\n        noise_freq_offset:\
+      \   frequency offset applied to noise\n        noise_timing_offset: timing offset\
+      \ applied to noise\n    \"\"\"\n\n    def __init__(self, noise_voltage=0.0,\
+      \ noise_freq_offset=0.0, noise_timing_offset=0.0):\n        gr.sync_block.__init__(\n\
+      \            self,\n            name=\"BER vs Noise Logger\",\n            in_sig=[np.float32],\n\
+      \            out_sig=None,\n        )\n\n        self.noise_voltage       =\
+      \ noise_voltage\n        self.noise_freq_offset   = noise_freq_offset\n    \
+      \    self.noise_timing_offset = noise_timing_offset\n\n        self.last_log_time\
+      \ = time.time()\n\n        self._init_csv()\n\n    def _init_csv(self):\n  \
+      \      file_exists = os.path.isfile(CSV_FILE)\n        with open(CSV_FILE, \"\
+      a\", newline=\"\") as f:\n            writer = csv.writer(f)\n            if\
+      \ not file_exists:\n                writer.writerow([\n                    \"\
+      timestamp\",\n                    \"noise_voltage\",\n                    \"\
+      noise_freq_offset\",\n                    \"noise_timing_offset\",\n       \
+      \             \"ber\",\n                ])\n\n    def _record(self, ber):\n\
+      \        timestamp = datetime.now().strftime(\"%Y-%m-%d %H:%M:%S.%f\")[:-3]\n\
+      \        with open(CSV_FILE, \"a\", newline=\"\") as f:\n            writer\
+      \ = csv.writer(f)\n            writer.writerow([\n                timestamp,\n\
+      \                self.noise_voltage,\n                self.noise_freq_offset,\n\
+      \                self.noise_timing_offset,\n                f\"{ber:.8f}\",\n\
+      \            ])\n        print(f\"[BER Logger] Recorded: voltage={self.noise_voltage}\
+      \ \"\n              f\"freq_offset={self.noise_freq_offset} \"\n           \
+      \   f\"timing_offset={self.noise_timing_offset} \"\n              f\"BER={ber:.8f}\"\
+      )\n\n    def work(self, input_items, output_items):\n        ber_in = input_items[0]\n\
+      \        n = len(ber_in)\n\n        now = time.time()\n        if now - self.last_log_time\
+      \ >= LOG_INTERVAL:\n            current_ber = float(np.mean(ber_in))\n     \
+      \       self._record(current_ber)\n            self.last_log_time = now\n\n\
+      \        return n\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    noise_freq_offset: noise_frequency_offset
+    noise_timing_offset: noise_timing_offset
+    noise_voltage: noise_voltage
+  states:
+    _io_cache: '(''BER vs Noise Logger'', ''blk'', [(''noise_voltage'', ''0.0''),
+      (''noise_freq_offset'', ''0.0''), (''noise_timing_offset'', ''0.0'')], [(''0'',
+      ''float'', 1)], [], ''\nRecords BER vs noise parameters to a CSV file periodically.\nEvery
+      LOG_INTERVAL seconds, snapshots the current parameters and BER.\n\nInputs:\n    in0:
+      float32 BER estimate (from BER Calculator block)\n\nParameters:\n    noise_voltage:       TX
+      noise voltage\n    noise_freq_offset:   frequency offset applied to noise\n    noise_timing_offset:
+      timing offset applied to noise\n'', [''noise_freq_offset'', ''noise_timing_offset'',
+      ''noise_voltage''])'
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1640, 920.0]
+    rotation: 0
+    state: enabled
 - name: import_0
   id: import
   parameters:
@@ -628,7 +876,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1472, 272.0]
+    coordinate: [1728, 280.0]
     rotation: 0
     state: bypassed
 - name: qtgui_const_sink_x_0
@@ -721,6 +969,132 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [1296, 520.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_number_sink_0
+  id: qtgui_number_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    autoscale: 'False'
+    avg: '0'
+    color1: ("black", "black")
+    color10: ("black", "black")
+    color2: ("black", "black")
+    color3: ("black", "black")
+    color4: ("black", "black")
+    color5: ("black", "black")
+    color6: ("black", "black")
+    color7: ("black", "black")
+    color8: ("black", "black")
+    color9: ("black", "black")
+    comment: ''
+    factor1: '1'
+    factor10: '1'
+    factor2: '1'
+    factor3: '1'
+    factor4: '1'
+    factor5: '1'
+    factor6: '1'
+    factor7: '1'
+    factor8: '1'
+    factor9: '1'
+    graph_type: qtgui.NUM_GRAPH_HORIZ
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    max: '0.5'
+    min: '0'
+    name: '"bit ER"'
+    nconnections: '1'
+    type: float
+    unit1: ''
+    unit10: ''
+    unit2: ''
+    unit3: ''
+    unit4: ''
+    unit5: ''
+    unit6: ''
+    unit7: ''
+    unit8: ''
+    unit9: ''
+    update_time: '0.10'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1352, 856.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_number_sink_0_0
+  id: qtgui_number_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    autoscale: 'False'
+    avg: '0'
+    color1: ("black", "black")
+    color10: ("black", "black")
+    color2: ("black", "black")
+    color3: ("black", "black")
+    color4: ("black", "black")
+    color5: ("black", "black")
+    color6: ("black", "black")
+    color7: ("black", "black")
+    color8: ("black", "black")
+    color9: ("black", "black")
+    comment: ''
+    factor1: '1'
+    factor10: '1'
+    factor2: '1'
+    factor3: '1'
+    factor4: '1'
+    factor5: '1'
+    factor6: '1'
+    factor7: '1'
+    factor8: '1'
+    factor9: '1'
+    graph_type: qtgui.NUM_GRAPH_HORIZ
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    max: '0.5'
+    min: '0'
+    name: '"byte ER"'
+    nconnections: '1'
+    type: float
+    unit1: ''
+    unit10: ''
+    unit2: ''
+    unit3: ''
+    unit4: ''
+    unit5: ''
+    unit6: ''
+    unit7: ''
+    unit8: ''
+    unit9: ''
+    update_time: '0.10'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1352, 968.0]
     rotation: 0
     state: enabled
 - name: qtgui_sink_x_0
@@ -869,7 +1243,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1680, 288.0]
+    coordinate: [1936, 296.0]
     rotation: 0
     state: enabled
 - name: soapy_bladerf_sink_0
@@ -882,7 +1256,7 @@ blocks:
     comment: ''
     dev_args: ''
     freq_correction: '0'
-    gain: '40'
+    gain: '17'
     samp_rate: samp_rate
     type: fc32
   states:
@@ -902,7 +1276,7 @@ blocks:
     comment: ''
     dev_args: ''
     freq_correction: '0'
-    gain: '30'
+    gain: '20'
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: samp_rate
@@ -911,7 +1285,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1072, 408.0]
+    coordinate: [1024, 424.0]
     rotation: 0
     state: enabled
 - name: soapy_plutosdr_sink_0
@@ -965,7 +1339,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1944, 312.0]
+    coordinate: [2200, 320.0]
     rotation: 0
     state: enabled
 - name: virtual_sink_1
@@ -1038,11 +1412,13 @@ connections:
 - [analog_agc3_xx_0, '0', low_pass_filter_0, '0']
 - [analog_random_uniform_source_x_0, '0', blocks_throttle2_0_0_0_0, '0']
 - [blocks_skiphead_0, '0', blocks_file_sink_1, '0']
+- [blocks_skiphead_0, '0', epy_block_0, '0']
 - [blocks_throttle2_0_0_0_0, '0', blocks_unpack_k_bits_bb_2, '0']
 - [blocks_throttle2_0_0_0_0, '0', digital_constellation_modulator_0, '0']
 - [blocks_unpack_k_bits_bb_0, '0', blocks_skiphead_0, '0']
 - [blocks_unpack_k_bits_bb_0, '0', epy_block_2, '0']
 - [blocks_unpack_k_bits_bb_2, '0', blocks_file_sink_0, '0']
+- [channels_channel_model_0, '0', analog_agc3_xx_0, '0']
 - [digital_constellation_decoder_cb_0, '0', virtual_sink_1, '0']
 - [digital_constellation_modulator_0, '0', qtgui_sink_x_0, '0']
 - [digital_constellation_modulator_0, '0', soapy_bladerf_sink_0, '0']
@@ -1054,15 +1430,18 @@ connections:
 - [digital_map_bb_0, '0', blocks_unpack_k_bits_bb_0, '0']
 - [digital_symbol_sync_xx_0, '0', digital_costas_loop_cc_0, '0']
 - [digital_symbol_sync_xx_0, '0', qtgui_const_sink_x_0, '0']
+- [epy_block_0, '0', epy_block_3, '0']
+- [epy_block_0, '0', qtgui_number_sink_0, '0']
+- [epy_block_0, '1', qtgui_number_sink_0_0, '0']
 - [epy_block_1, '0', blocks_throttle2_0_0_0_0, '0']
 - [epy_block_2, '0', qtgui_time_sink_x_0, '0']
 - [low_pass_filter_0, '0', root_raised_cosine_filter_0, '0']
 - [root_raised_cosine_filter_0, '0', virtual_sink_0, '0']
-- [soapy_bladerf_source_0, '0', analog_agc3_xx_0, '0']
-- [soapy_plutosdr_source_0_0, '0', analog_agc3_xx_0, '0']
+- [soapy_bladerf_source_0, '0', channels_channel_model_0, '0']
+- [soapy_plutosdr_source_0_0, '0', channels_channel_model_0, '0']
 - [virtual_source_0, '0', digital_symbol_sync_xx_0, '0']
 - [virtual_source_1, '0', digital_diff_decoder_bb_0, '0']
-- [virtual_source_3, '0', analog_agc3_xx_0, '0']
+- [virtual_source_3, '0', channels_channel_model_0, '0']
 
 metadata:
   file_format: 1
