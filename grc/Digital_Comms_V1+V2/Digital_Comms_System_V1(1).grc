@@ -853,7 +853,7 @@ blocks:
     bus_structure: null
     coordinate: [752, 328.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: soapy_plutosdr_source_0_0
   id: soapy_plutosdr_source
   parameters:
@@ -875,7 +875,7 @@ blocks:
     bus_structure: null
     coordinate: [1072, 328.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: virtual_sink_0
   id: virtual_sink
   parameters:
@@ -927,7 +927,7 @@ blocks:
     bus_structure: null
     coordinate: [816, 488.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: virtual_source_0
   id: virtual_source
   parameters:
@@ -979,7 +979,7 @@ blocks:
     bus_structure: null
     coordinate: [1088, 488.0]
     rotation: 0
-    state: disabled
+    state: enabled
 
 connections:
 - [analog_random_uniform_source_x_0, '0', blocks_head_0, '0']
