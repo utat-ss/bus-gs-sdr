@@ -8,3 +8,5 @@ The pilot signal is a repeated stream of integers. Essentially:
 # Still being debugged!
 
 I need to double check my BER calculations though... Sometimes the locking clearly isn't working but the BER is still zero. 
+
+![Flowgraph Screenshot](V3_realtime_BER_screenshot_May30_2026.png)
