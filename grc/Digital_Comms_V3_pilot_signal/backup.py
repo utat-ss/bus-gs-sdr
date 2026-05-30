@@ -11,11 +11,13 @@
 
 from PyQt5 import Qt
 from gnuradio import qtgui
+from PyQt5 import QtCore
 from gnuradio import analog
 from gnuradio import blocks
+from gnuradio import channels
+from gnuradio.filter import firdes
 from gnuradio import digital
 from gnuradio import filter
-from gnuradio.filter import firdes
 from gnuradio import gr
 from gnuradio.fft import window
 import sys
@@ -25,7 +27,9 @@ from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import soapy
+import backup_epy_block_0 as epy_block_0  # embedded python block
 import backup_epy_block_1 as epy_block_1  # embedded python block
+import backup_epy_block_3 as epy_block_3  # embedded python block
 import math
 import numpy
 import sip
@@ -71,7 +75,9 @@ class backup(gr.top_block, Qt.QWidget):
         ##################################################
         self.sps = sps = 8
         self.samp_rate = samp_rate = 800e3
-        self.fc = fc = 200000
+        self.noise_voltage = noise_voltage = 0
+        self.noise_timing_offset = noise_timing_offset = 1
+        self.noise_frequency_offset = noise_frequency_offset = 0
         self.center_freq = center_freq = 1000e6
         self.alpha = alpha = 0.5
         self.QPSK_constellation = QPSK_constellation = digital.constellation_calcdist([-1-1j, -1+1j, 1+1j, 1-1j], [0, 1, 3, 2],
@@ -82,6 +88,15 @@ class backup(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
 
+        self._noise_voltage_range = qtgui.Range(0, 5, 0.1, 0, 200)
+        self._noise_voltage_win = qtgui.RangeWidget(self._noise_voltage_range, self.set_noise_voltage, "'noise_voltage'", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._noise_voltage_win)
+        self._noise_timing_offset_range = qtgui.Range(1, 1.1, 0.0001, 1, 200)
+        self._noise_timing_offset_win = qtgui.RangeWidget(self._noise_timing_offset_range, self.set_noise_timing_offset, "'noise_timing_offset'", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._noise_timing_offset_win)
+        self._noise_frequency_offset_range = qtgui.Range(0, 0.2, 0.001, 0, 200)
+        self._noise_frequency_offset_win = qtgui.RangeWidget(self._noise_frequency_offset_range, self.set_noise_frequency_offset, "'noise_frequency_offset'", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._noise_frequency_offset_win)
         self.soapy_bladerf_source_0 = None
         dev = 'driver=bladerf'
         stream_args = ''
@@ -94,7 +109,7 @@ class backup(gr.top_block, Qt.QWidget):
         self.soapy_bladerf_source_0.set_bandwidth(0, 0.0)
         self.soapy_bladerf_source_0.set_frequency(0, center_freq)
         self.soapy_bladerf_source_0.set_frequency_correction(0, 0)
-        self.soapy_bladerf_source_0.set_gain(0, min(max(30, -1.0), 60.0))
+        self.soapy_bladerf_source_0.set_gain(0, min(max(20, -1.0), 60.0))
         self.soapy_bladerf_sink_0 = None
         dev = 'driver=bladerf'
         stream_args = ''
@@ -107,7 +122,7 @@ class backup(gr.top_block, Qt.QWidget):
         self.soapy_bladerf_sink_0.set_bandwidth(0, 0.0)
         self.soapy_bladerf_sink_0.set_frequency(0, center_freq)
         self.soapy_bladerf_sink_0.set_frequency_correction(0, 0)
-        self.soapy_bladerf_sink_0.set_gain(0, min(max(40, 17.0), 73.0))
+        self.soapy_bladerf_sink_0.set_gain(0, min(max(17, 17.0), 73.0))
         self.root_raised_cosine_filter_0 = filter.fir_filter_ccf(
             1,
             firdes.root_raised_cosine(
@@ -116,6 +131,72 @@ class backup(gr.top_block, Qt.QWidget):
                 (samp_rate / sps),
                 alpha,
                 (11*sps)))
+        self.qtgui_number_sink_0_0 = qtgui.number_sink(
+            gr.sizeof_float,
+            0,
+            qtgui.NUM_GRAPH_HORIZ,
+            1,
+            None # parent
+        )
+        self.qtgui_number_sink_0_0.set_update_time(0.10)
+        self.qtgui_number_sink_0_0.set_title("byte ER")
+
+        labels = ['', '', '', '', '',
+            '', '', '', '', '']
+        units = ['', '', '', '', '',
+            '', '', '', '', '']
+        colors = [("black", "black"), ("black", "black"), ("black", "black"), ("black", "black"), ("black", "black"),
+            ("black", "black"), ("black", "black"), ("black", "black"), ("black", "black"), ("black", "black")]
+        factor = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+
+        for i in range(1):
+            self.qtgui_number_sink_0_0.set_min(i, 0)
+            self.qtgui_number_sink_0_0.set_max(i, 0.5)
+            self.qtgui_number_sink_0_0.set_color(i, colors[i][0], colors[i][1])
+            if len(labels[i]) == 0:
+                self.qtgui_number_sink_0_0.set_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_number_sink_0_0.set_label(i, labels[i])
+            self.qtgui_number_sink_0_0.set_unit(i, units[i])
+            self.qtgui_number_sink_0_0.set_factor(i, factor[i])
+
+        self.qtgui_number_sink_0_0.enable_autoscale(False)
+        self._qtgui_number_sink_0_0_win = sip.wrapinstance(self.qtgui_number_sink_0_0.qwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_number_sink_0_0_win)
+        self.qtgui_number_sink_0 = qtgui.number_sink(
+            gr.sizeof_float,
+            0,
+            qtgui.NUM_GRAPH_HORIZ,
+            1,
+            None # parent
+        )
+        self.qtgui_number_sink_0.set_update_time(0.10)
+        self.qtgui_number_sink_0.set_title("bit ER")
+
+        labels = ['', '', '', '', '',
+            '', '', '', '', '']
+        units = ['', '', '', '', '',
+            '', '', '', '', '']
+        colors = [("black", "black"), ("black", "black"), ("black", "black"), ("black", "black"), ("black", "black"),
+            ("black", "black"), ("black", "black"), ("black", "black"), ("black", "black"), ("black", "black")]
+        factor = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+
+        for i in range(1):
+            self.qtgui_number_sink_0.set_min(i, 0)
+            self.qtgui_number_sink_0.set_max(i, 0.5)
+            self.qtgui_number_sink_0.set_color(i, colors[i][0], colors[i][1])
+            if len(labels[i]) == 0:
+                self.qtgui_number_sink_0.set_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_number_sink_0.set_label(i, labels[i])
+            self.qtgui_number_sink_0.set_unit(i, units[i])
+            self.qtgui_number_sink_0.set_factor(i, factor[i])
+
+        self.qtgui_number_sink_0.enable_autoscale(False)
+        self._qtgui_number_sink_0_win = sip.wrapinstance(self.qtgui_number_sink_0.qwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_number_sink_0_win)
         self.qtgui_const_sink_x_0 = qtgui.const_sink_c(
             1024, #size
             "", #name
@@ -157,7 +238,9 @@ class backup(gr.top_block, Qt.QWidget):
 
         self._qtgui_const_sink_x_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_const_sink_x_0_win)
+        self.epy_block_3 = epy_block_3.blk(noise_voltage=noise_voltage, noise_freq_offset=noise_frequency_offset, noise_timing_offset=noise_timing_offset)
         self.epy_block_1 = epy_block_1.blk()
+        self.epy_block_0 = epy_block_0.blk(buffer_size=20000, realign_interval=50000, periodic_realign=True, score_threshold=0.8, stats_reset_interval=1000)
         self.digital_symbol_sync_xx_0 = digital.symbol_sync_cc(
             digital.TED_SIGNAL_TIMES_SLOPE_ML,
             sps,
@@ -183,11 +266,16 @@ class backup(gr.top_block, Qt.QWidget):
             log=False,
             truncate=False)
         self.digital_constellation_decoder_cb_0 = digital.constellation_decoder_cb(QPSK_constellation)
+        self.channels_channel_model_0 = channels.channel_model(
+            noise_voltage=noise_voltage,
+            frequency_offset=noise_frequency_offset,
+            epsilon=noise_timing_offset,
+            taps=[1.0],
+            noise_seed=0,
+            block_tags=False)
         self.blocks_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(2)
         self.blocks_throttle2_0_0_0_0 = blocks.throttle( gr.sizeof_char*1, samp_rate, True, 0 if "auto" == "auto" else max( int(float(0.1) * samp_rate) if "auto" == "time" else int(0.1), 1) )
         self.blocks_skiphead_0 = blocks.skiphead(gr.sizeof_char*1, int(samp_rate))
-        self.blocks_file_sink_1 = blocks.file_sink(gr.sizeof_char*1, 'pilot_rx_bits.txt', False)
-        self.blocks_file_sink_1.set_unbuffered(False)
         self.analog_agc3_xx_0 = analog.agc3_cc((1e-3), (1e-4), 1.0, 1.0, 1, 65536)
 
 
@@ -195,9 +283,10 @@ class backup(gr.top_block, Qt.QWidget):
         # Connections
         ##################################################
         self.connect((self.analog_agc3_xx_0, 0), (self.root_raised_cosine_filter_0, 0))
-        self.connect((self.blocks_skiphead_0, 0), (self.blocks_file_sink_1, 0))
+        self.connect((self.blocks_skiphead_0, 0), (self.epy_block_0, 0))
         self.connect((self.blocks_throttle2_0_0_0_0, 0), (self.digital_constellation_modulator_0, 0))
         self.connect((self.blocks_unpack_k_bits_bb_0, 0), (self.blocks_skiphead_0, 0))
+        self.connect((self.channels_channel_model_0, 0), (self.analog_agc3_xx_0, 0))
         self.connect((self.digital_constellation_decoder_cb_0, 0), (self.digital_diff_decoder_bb_0, 0))
         self.connect((self.digital_constellation_modulator_0, 0), (self.soapy_bladerf_sink_0, 0))
         self.connect((self.digital_costas_loop_cc_0, 0), (self.digital_constellation_decoder_cb_0, 0))
@@ -206,9 +295,12 @@ class backup(gr.top_block, Qt.QWidget):
         self.connect((self.digital_map_bb_0, 0), (self.blocks_unpack_k_bits_bb_0, 0))
         self.connect((self.digital_symbol_sync_xx_0, 0), (self.digital_costas_loop_cc_0, 0))
         self.connect((self.digital_symbol_sync_xx_0, 0), (self.qtgui_const_sink_x_0, 0))
+        self.connect((self.epy_block_0, 0), (self.epy_block_3, 0))
+        self.connect((self.epy_block_0, 0), (self.qtgui_number_sink_0, 0))
+        self.connect((self.epy_block_0, 1), (self.qtgui_number_sink_0_0, 0))
         self.connect((self.epy_block_1, 0), (self.blocks_throttle2_0_0_0_0, 0))
         self.connect((self.root_raised_cosine_filter_0, 0), (self.digital_symbol_sync_xx_0, 0))
-        self.connect((self.soapy_bladerf_source_0, 0), (self.analog_agc3_xx_0, 0))
+        self.connect((self.soapy_bladerf_source_0, 0), (self.channels_channel_model_0, 0))
 
 
     def closeEvent(self, event):
@@ -239,11 +331,29 @@ class backup(gr.top_block, Qt.QWidget):
         self.soapy_bladerf_sink_0.set_sample_rate(0, self.samp_rate)
         self.soapy_bladerf_source_0.set_sample_rate(0, self.samp_rate)
 
-    def get_fc(self):
-        return self.fc
+    def get_noise_voltage(self):
+        return self.noise_voltage
 
-    def set_fc(self, fc):
-        self.fc = fc
+    def set_noise_voltage(self, noise_voltage):
+        self.noise_voltage = noise_voltage
+        self.channels_channel_model_0.set_noise_voltage(self.noise_voltage)
+        self.epy_block_3.noise_voltage = self.noise_voltage
+
+    def get_noise_timing_offset(self):
+        return self.noise_timing_offset
+
+    def set_noise_timing_offset(self, noise_timing_offset):
+        self.noise_timing_offset = noise_timing_offset
+        self.channels_channel_model_0.set_timing_offset(self.noise_timing_offset)
+        self.epy_block_3.noise_timing_offset = self.noise_timing_offset
+
+    def get_noise_frequency_offset(self):
+        return self.noise_frequency_offset
+
+    def set_noise_frequency_offset(self, noise_frequency_offset):
+        self.noise_frequency_offset = noise_frequency_offset
+        self.channels_channel_model_0.set_frequency_offset(self.noise_frequency_offset)
+        self.epy_block_3.noise_freq_offset = self.noise_frequency_offset
 
     def get_center_freq(self):
         return self.center_freq
