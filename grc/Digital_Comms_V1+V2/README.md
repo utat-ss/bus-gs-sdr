@@ -20,19 +20,22 @@ This are the main parts of the flowgraph, updated from flow.md:
 
 
 2. Constellation Modulator
-        * Unpacks the 1 byte (0-255) to 8 bits (0or1)
-        * Turns the 8 bits to 4 "complex bits" (Through the QPSK constellation, which turns 0123 to 1+j, 1-j, etc etc)
-        * Differential encoding
+* Unpacks the 1 byte (0-255) to 8 bits (0or1)
+* Turns the 8 bits to 4 "complex bits" (Through the QPSK constellation, which turns 0123 to 1+j, 1-j, etc etc)
+* Differential encoding
+
+Notes:
+
     - Constellation is regular QPSK
     - Yes differential encoding
     - Complex_bits to complex signal (blue)
     - sps = 8
     - This block does a lot... beware
 
-3. RRC Filter
+4. RRC Filter
     - Pulse shaping
 
-4. Virtual Sink (to be replaced by SDR sink)
+5. Virtual Sink (to be replaced by SDR sink)
 
 
 ### Rx
