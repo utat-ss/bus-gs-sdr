@@ -10,6 +10,7 @@
 
 from PyQt5 import Qt
 from gnuradio import qtgui
+from PyQt5 import QtCore
 from gnuradio import blocks
 import numpy
 from gnuradio import channels
@@ -65,27 +66,23 @@ class FLL_debug(gr.top_block, Qt.QWidget):
         # Variables
         ##################################################
         self.sps = sps = 8
-        self.samp_rate = samp_rate = 2e6
+        self.samp_rate = samp_rate = 500e3
         self.qpsk_cons = qpsk_cons = digital.constellation_calcdist([1+1j, -1+1j, -1-1j, 1-1j], [0, 1, 2, 3],
         4, 1, digital.constellation.AMPLITUDE_NORMALIZATION).base()
         self.qpsk_cons.set_npwr(1.0)
-        self.alpha = alpha = 0.35
+        self.freq_offset = freq_offset = 0.005
+        self.alpha = alpha = 1.0
 
         ##################################################
         # Blocks
         ##################################################
 
-        self.root_raised_cosine_filter_0 = filter.fir_filter_ccf(
-            1,
-            firdes.root_raised_cosine(
-                1,
-                samp_rate,
-                sps,
-                alpha,
-                (int(11*samp_rate))))
+        self._freq_offset_range = qtgui.Range(0, 0.25, 0.01, 0.005, 200)
+        self._freq_offset_win = qtgui.RangeWidget(self._freq_offset_range, self.set_freq_offset, "'freq_offset'", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_layout.addWidget(self._freq_offset_win)
         self.qtgui_const_sink_x_1 = qtgui.const_sink_c(
             1024, #size
-            "", #name
+            "Pre&Post Costas Loop", #name
             2, #number of inputs
             None # parent
         )
@@ -98,7 +95,7 @@ class FLL_debug(gr.top_block, Qt.QWidget):
         self.qtgui_const_sink_x_1.enable_axis_labels(True)
 
 
-        labels = ['', '', '', '', '',
+        labels = ["pre costas", "post costas", '', '', '',
             '', '', '', '', '']
         widths = [1, 1, 1, 1, 1,
             1, 1, 1, 1, 1]
@@ -124,6 +121,47 @@ class FLL_debug(gr.top_block, Qt.QWidget):
 
         self._qtgui_const_sink_x_1_win = sip.wrapinstance(self.qtgui_const_sink_x_1.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_const_sink_x_1_win)
+        self.qtgui_const_sink_x_0 = qtgui.const_sink_c(
+            1024, #size
+            "pre & post FLL", #name
+            2, #number of inputs
+            None # parent
+        )
+        self.qtgui_const_sink_x_0.set_update_time(0.10)
+        self.qtgui_const_sink_x_0.set_y_axis((-2), 2)
+        self.qtgui_const_sink_x_0.set_x_axis((-2), 2)
+        self.qtgui_const_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, "")
+        self.qtgui_const_sink_x_0.enable_autoscale(False)
+        self.qtgui_const_sink_x_0.enable_grid(False)
+        self.qtgui_const_sink_x_0.enable_axis_labels(True)
+
+
+        labels = ["Pre FLL", "Post FLL", '', '', '',
+            '', '', '', '', '']
+        widths = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        colors = ["blue", "red", "green", "black", "cyan",
+            "magenta", "yellow", "dark red", "dark green", "dark blue"]
+        styles = [0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0]
+        markers = [0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0]
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0, 1.0]
+
+        for i in range(2):
+            if len(labels[i]) == 0:
+                self.qtgui_const_sink_x_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_const_sink_x_0.set_line_label(i, labels[i])
+            self.qtgui_const_sink_x_0.set_line_width(i, widths[i])
+            self.qtgui_const_sink_x_0.set_line_color(i, colors[i])
+            self.qtgui_const_sink_x_0.set_line_style(i, styles[i])
+            self.qtgui_const_sink_x_0.set_line_marker(i, markers[i])
+            self.qtgui_const_sink_x_0.set_line_alpha(i, alphas[i])
+
+        self._qtgui_const_sink_x_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0.qwidget(), Qt.QWidget)
+        self.top_layout.addWidget(self._qtgui_const_sink_x_0_win)
         self.digital_symbol_sync_xx_0 = digital.symbol_sync_cc(
             digital.TED_SIGNAL_TIMES_SLOPE_ML,
             sps,
@@ -136,6 +174,7 @@ class FLL_debug(gr.top_block, Qt.QWidget):
             digital.IR_MMSE_8TAP,
             128,
             [])
+        self.digital_fll_band_edge_cc_0 = digital.fll_band_edge_cc(sps, alpha, 89, 0.02)
         self.digital_costas_loop_cc_0 = digital.costas_loop_cc((2*math.pi/100), 4, False)
         self.digital_constellation_modulator_0 = digital.generic_mod(
             constellation=qpsk_cons,
@@ -146,6 +185,13 @@ class FLL_debug(gr.top_block, Qt.QWidget):
             verbose=False,
             log=False,
             truncate=False)
+        self.channels_channel_model_0 = channels.channel_model(
+            noise_voltage=0.0,
+            frequency_offset=freq_offset,
+            epsilon=1.0,
+            taps=[1.0],
+            noise_seed=0,
+            block_tags=False)
         self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_char*1, samp_rate, True, 0 if "auto" == "auto" else max( int(float(0.1) * samp_rate) if "auto" == "time" else int(0.1), 1) )
         self.blocks_pack_k_bits_bb_1 = blocks.pack_k_bits_bb(8)
         self.analog_random_source_x_0 = blocks.vector_source_b(list(map(int, numpy.random.randint(0, 2, (int(samp_rate*5))))), True)
@@ -157,11 +203,14 @@ class FLL_debug(gr.top_block, Qt.QWidget):
         self.connect((self.analog_random_source_x_0, 0), (self.blocks_throttle2_0, 0))
         self.connect((self.blocks_pack_k_bits_bb_1, 0), (self.digital_constellation_modulator_0, 0))
         self.connect((self.blocks_throttle2_0, 0), (self.blocks_pack_k_bits_bb_1, 0))
-        self.connect((self.digital_constellation_modulator_0, 0), (self.root_raised_cosine_filter_0, 0))
+        self.connect((self.channels_channel_model_0, 0), (self.digital_fll_band_edge_cc_0, 0))
+        self.connect((self.channels_channel_model_0, 0), (self.qtgui_const_sink_x_0, 0))
+        self.connect((self.digital_constellation_modulator_0, 0), (self.channels_channel_model_0, 0))
         self.connect((self.digital_costas_loop_cc_0, 0), (self.qtgui_const_sink_x_1, 1))
+        self.connect((self.digital_fll_band_edge_cc_0, 0), (self.digital_symbol_sync_xx_0, 0))
+        self.connect((self.digital_fll_band_edge_cc_0, 0), (self.qtgui_const_sink_x_0, 1))
         self.connect((self.digital_symbol_sync_xx_0, 0), (self.digital_costas_loop_cc_0, 0))
         self.connect((self.digital_symbol_sync_xx_0, 0), (self.qtgui_const_sink_x_1, 0))
-        self.connect((self.root_raised_cosine_filter_0, 0), (self.digital_symbol_sync_xx_0, 0))
 
 
     def closeEvent(self, event):
@@ -178,7 +227,6 @@ class FLL_debug(gr.top_block, Qt.QWidget):
     def set_sps(self, sps):
         self.sps = sps
         self.digital_symbol_sync_xx_0.set_sps(self.sps)
-        self.root_raised_cosine_filter_0.set_taps(firdes.root_raised_cosine(1, self.samp_rate, self.sps, self.alpha, (int(11*self.samp_rate))))
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -186,7 +234,6 @@ class FLL_debug(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.blocks_throttle2_0.set_sample_rate(self.samp_rate)
-        self.root_raised_cosine_filter_0.set_taps(firdes.root_raised_cosine(1, self.samp_rate, self.sps, self.alpha, (int(11*self.samp_rate))))
 
     def get_qpsk_cons(self):
         return self.qpsk_cons
@@ -194,12 +241,18 @@ class FLL_debug(gr.top_block, Qt.QWidget):
     def set_qpsk_cons(self, qpsk_cons):
         self.qpsk_cons = qpsk_cons
 
+    def get_freq_offset(self):
+        return self.freq_offset
+
+    def set_freq_offset(self, freq_offset):
+        self.freq_offset = freq_offset
+        self.channels_channel_model_0.set_frequency_offset(self.freq_offset)
+
     def get_alpha(self):
         return self.alpha
 
     def set_alpha(self, alpha):
         self.alpha = alpha
-        self.root_raised_cosine_filter_0.set_taps(firdes.root_raised_cosine(1, self.samp_rate, self.sps, self.alpha, (int(11*self.samp_rate))))
 
 
 

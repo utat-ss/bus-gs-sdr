@@ -37,12 +37,33 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '0.35'
+    value: '1.0'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
     coordinate: [656, 8.0]
+    rotation: 0
+    state: enabled
+- name: freq_offset
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '0.01'
+    stop: '0.25'
+    value: '0.005'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [504, 664.0]
     rotation: 0
     state: enabled
 - name: loop_bw
@@ -63,7 +84,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [736, 768.0]
+    coordinate: [640, 792.0]
     rotation: 0
     state: disabled
 - name: qpsk_cons
@@ -90,7 +111,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 2e6
+    value: 500e3
   states:
     bus_sink: false
     bus_source: false
@@ -195,7 +216,7 @@ blocks:
     block_tags: 'False'
     comment: ''
     epsilon: '1.0'
-    freq_offset: '0.0'
+    freq_offset: freq_offset
     maxoutbuf: '0'
     minoutbuf: '0'
     noise_voltage: '0.0'
@@ -205,9 +226,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [488, 552.0]
+    coordinate: [496, 520.0]
     rotation: 0
-    state: bypassed
+    state: enabled
 - name: digital_constellation_decoder_cb_0
   id: digital_constellation_decoder_cb
   parameters:
@@ -261,7 +282,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1392, 608.0]
+    coordinate: [1400, 608.0]
     rotation: 0
     state: enabled
 - name: digital_fll_band_edge_cc_0
@@ -269,29 +290,28 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    comment: 'filter size: sps*2+1
-
-      loop bandwidth: 2 * math.pi / sps / 100 ~= 0.003'
+    comment: "filter size: sps*2+1\nloop bandwidth: 2 * math.pi / sps / 100 ~= 0.003\n\
+      \nClaude: sps*11 + 1\nloop_bw = 0.005 \u2013 0.020"
     filter_size: '89'
     maxoutbuf: '0'
     minoutbuf: '0'
     rolloff: alpha
     samps_per_sym: sps
     type: cc
-    w: loop_bw
+    w: '0.02'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [720, 616.0]
+    coordinate: [720, 488.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: digital_symbol_sync_xx_0
   id: digital_symbol_sync_xx
   parameters:
     affinity: ''
     alias: ''
-    comment: ''
+    comment: Takes care of RRC
     constellation: digital.constellation_bpsk().base()
     damping: '1.0'
     loop_bw: '0.045'
@@ -327,6 +347,190 @@ blocks:
     rotation: 0
     state: enabled
 - name: qtgui_const_sink_x_0
+  id: qtgui_const_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    grid: 'False'
+    gui_hint: ''
+    label1: '"Pre FLL"'
+    label10: ''
+    label2: '"Post FLL"'
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: '0'
+    marker10: '0'
+    marker2: '0'
+    marker3: '0'
+    marker4: '0'
+    marker5: '0'
+    marker6: '0'
+    marker7: '0'
+    marker8: '0'
+    marker9: '0'
+    name: '"pre & post FLL"'
+    nconnections: '2'
+    size: '1024'
+    style1: '0'
+    style10: '0'
+    style2: '0'
+    style3: '0'
+    style4: '0'
+    style5: '0'
+    style6: '0'
+    style7: '0'
+    style8: '0'
+    style9: '0'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: complex
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    xmax: '2'
+    xmin: '-2'
+    ymax: '2'
+    ymin: '-2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [808.0, 792]
+    rotation: 270
+    state: enabled
+- name: qtgui_const_sink_x_1
+  id: qtgui_const_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    grid: 'False'
+    gui_hint: ''
+    label1: '"pre costas"'
+    label10: ''
+    label2: '"post costas"'
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: '0'
+    marker10: '0'
+    marker2: '0'
+    marker3: '0'
+    marker4: '0'
+    marker5: '0'
+    marker6: '0'
+    marker7: '0'
+    marker8: '0'
+    marker9: '0'
+    name: '"Pre&Post Costas Loop"'
+    nconnections: '2'
+    size: '1024'
+    style1: '0'
+    style10: '0'
+    style2: '0'
+    style3: '0'
+    style4: '0'
+    style5: '0'
+    style6: '0'
+    style7: '0'
+    style8: '0'
+    style9: '0'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: complex
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    xmax: '2'
+    xmin: '-2'
+    ymax: '2'
+    ymin: '-2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1664, 544.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_const_sink_x_2
   id: qtgui_const_sink_x
   parameters:
     affinity: ''
@@ -415,124 +619,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1040, 760.0]
+    coordinate: [1000, 392.0]
     rotation: 0
     state: disabled
-- name: qtgui_const_sink_x_1
-  id: qtgui_const_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'False'
-    axislabels: 'True'
-    color1: '"blue"'
-    color10: '"dark blue"'
-    color2: '"red"'
-    color3: '"green"'
-    color4: '"black"'
-    color5: '"cyan"'
-    color6: '"magenta"'
-    color7: '"yellow"'
-    color8: '"dark red"'
-    color9: '"dark green"'
-    comment: ''
-    grid: 'False'
-    gui_hint: ''
-    label1: ''
-    label10: ''
-    label2: ''
-    label3: ''
-    label4: ''
-    label5: ''
-    label6: ''
-    label7: ''
-    label8: ''
-    label9: ''
-    legend: 'True'
-    marker1: '0'
-    marker10: '0'
-    marker2: '0'
-    marker3: '0'
-    marker4: '0'
-    marker5: '0'
-    marker6: '0'
-    marker7: '0'
-    marker8: '0'
-    marker9: '0'
-    name: '""'
-    nconnections: '2'
-    size: '1024'
-    style1: '0'
-    style10: '0'
-    style2: '0'
-    style3: '0'
-    style4: '0'
-    style5: '0'
-    style6: '0'
-    style7: '0'
-    style8: '0'
-    style9: '0'
-    tr_chan: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
-    type: complex
-    update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    xmax: '2'
-    xmin: '-2'
-    ymax: '2'
-    ymin: '-2'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1664, 544.0]
-    rotation: 0
-    state: enabled
-- name: root_raised_cosine_filter_0
-  id: root_raised_cosine_filter
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha: alpha
-    comment: ''
-    decim: '1'
-    gain: '1'
-    interp: '1'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    ntaps: int(11*samp_rate)
-    samp_rate: samp_rate
-    sym_rate: sps
-    type: fir_filter_ccf
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [296, 552.0]
-    rotation: 0
-    state: enabled
 - name: virtual_sink_0
   id: virtual_sink
   parameters:
@@ -566,16 +655,16 @@ connections:
 - [blocks_throttle2_0, '0', blocks_pack_k_bits_bb_1, '0']
 - [blocks_vector_source_x_0, '0', blocks_throttle2_0, '0']
 - [channels_channel_model_0, '0', digital_fll_band_edge_cc_0, '0']
-- [channels_channel_model_0, '0', digital_symbol_sync_xx_0, '0']
+- [channels_channel_model_0, '0', qtgui_const_sink_x_0, '0']
+- [digital_constellation_modulator_0, '0', qtgui_const_sink_x_2, '0']
 - [digital_constellation_modulator_0, '0', virtual_sink_0, '0']
 - [digital_costas_loop_cc_0, '0', qtgui_const_sink_x_1, '1']
 - [digital_fll_band_edge_cc_0, '0', digital_symbol_sync_xx_0, '0']
-- [digital_fll_band_edge_cc_0, '0', qtgui_const_sink_x_0, '0']
+- [digital_fll_band_edge_cc_0, '0', qtgui_const_sink_x_0, '1']
 - [digital_symbol_sync_xx_0, '0', digital_constellation_decoder_cb_0, '0']
 - [digital_symbol_sync_xx_0, '0', digital_costas_loop_cc_0, '0']
 - [digital_symbol_sync_xx_0, '0', qtgui_const_sink_x_1, '0']
-- [root_raised_cosine_filter_0, '0', channels_channel_model_0, '0']
-- [virtual_source_0, '0', root_raised_cosine_filter_0, '0']
+- [virtual_source_0, '0', channels_channel_model_0, '0']
 
 metadata:
   file_format: 1
