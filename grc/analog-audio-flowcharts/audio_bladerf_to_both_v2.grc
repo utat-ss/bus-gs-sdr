@@ -508,32 +508,6 @@ blocks:
     coordinate: [224, 520.0]
     rotation: 0
     state: enabled
-- name: iio_pluto_sink_0_0
-  id: iio_pluto_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    attenuation1: 89.75-tx_gain
-    bandwidth: '20000000'
-    buffer_size: '32768'
-    comment: ''
-    cyclic: 'False'
-    filter: ''
-    filter_source: '''Auto'''
-    fpass: '0'
-    frequency: freq_rx
-    fstop: '0'
-    len_tag_key: ''
-    samplerate: samp_rate
-    type: fc32
-    uri: ''
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1128, 620.0]
-    rotation: 0
-    state: disabled
 - name: iio_pluto_source_0
   id: iio_pluto_source
   parameters:
@@ -760,8 +734,8 @@ blocks:
     coordinate: [776, 776.0]
     rotation: 0
     state: disabled
-- name: soapy_bladerf_sink_0
-  id: soapy_bladerf_sink
+- name: soapy_plutosdr_sink_0
+  id: soapy_plutosdr_sink
   parameters:
     affinity: ''
     alias: ''
@@ -769,28 +743,27 @@ blocks:
     center_freq: freq_tx
     comment: ''
     dev_args: ''
-    freq_correction: '0'
-    gain: tx_gain_b
+    gain: '20'
     samp_rate: samp_rate
     type: fc32
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1184, 432.0]
+    coordinate: [1064, 528.0]
     rotation: 0
     state: enabled
-- name: soapy_bladerf_source_0
-  id: soapy_bladerf_source
+- name: soapy_plutosdr_source_0
+  id: soapy_plutosdr_source
   parameters:
     affinity: ''
+    agc: 'False'
     alias: ''
     bandwidth: '0.0'
-    center_freq: freq_rx + freq_shift
+    center_freq: freq_rx
     comment: ''
     dev_args: ''
-    freq_correction: '0'
-    gain: rx_gain_b
+    gain: '20'
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: samp_rate
@@ -799,7 +772,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [96, 960.0]
+    coordinate: [184, 1000.0]
     rotation: 0
     state: enabled
 - name: zeromq_push_sink_0
@@ -839,12 +812,11 @@ connections:
 - [iio_pluto_source_0, '0', blocks_freqshift_cc_0_1, '0']
 - [low_pass_filter_0, '0', rational_resampler_xxx_1, '0']
 - [low_pass_filter_0_0, '0', rational_resampler_xxx_1_0, '0']
-- [rational_resampler_xxx_0, '0', iio_pluto_sink_0_0, '0']
 - [rational_resampler_xxx_0, '0', qtgui_sink_x_1, '0']
-- [rational_resampler_xxx_0, '0', soapy_bladerf_sink_0, '0']
+- [rational_resampler_xxx_0, '0', soapy_plutosdr_sink_0, '0']
 - [rational_resampler_xxx_1, '0', analog_simple_squelch_cc_0, '0']
 - [rational_resampler_xxx_1_0, '0', analog_simple_squelch_cc_0_0, '0']
-- [soapy_bladerf_source_0, '0', blocks_freqshift_cc_0, '0']
+- [soapy_plutosdr_source_0, '0', blocks_freqshift_cc_0, '0']
 
 metadata:
   file_format: 1

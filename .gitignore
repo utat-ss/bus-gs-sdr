@@ -1,2 +1,8 @@
 grc/*.py
-
+grc/*.bin
+grc/Digital_Comms_V3_pilot_signal/debug/rx_bytes.bin
+grc/analog-audio-flowcharts/test_wahaha.wav
+grc/Digital_Comms_V3_pilot_signal/debug/*.bin
+grc/Digital_Comms_V3_pilot_signal/*.bin
+grc/analog-audio-flowcharts/*.wav
+grc/Digital_Comms_V3_pilot_signal/debug/*.txt

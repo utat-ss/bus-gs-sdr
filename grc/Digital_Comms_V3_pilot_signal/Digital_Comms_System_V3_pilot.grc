@@ -216,7 +216,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1160, 904.0]
+    coordinate: [1320, 928.0]
     rotation: 0
     state: enabled
 - name: blocks_skiphead_0
@@ -234,7 +234,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [944, 928.0]
+    coordinate: [1104, 928.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle2_0_0_0_0
@@ -305,7 +305,7 @@ blocks:
     bus_structure: null
     coordinate: [1432, 696.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: digital_constellation_modulator_0
   id: digital_constellation_modulator
   parameters:
@@ -980,7 +980,7 @@ blocks:
     bus_structure: null
     coordinate: [1880, 760.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: virtual_sink_2
   id: virtual_sink
   parameters:

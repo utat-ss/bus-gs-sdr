@@ -1,0 +1,761 @@
+options:
+  parameters:
+    author: shaunaliu
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: test
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: Not titled yet
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: msg
+  id: variable
+  parameters:
+    comment: ''
+    value: '"0001000101011100101001111010011110101011010110001111010101001111011101110110101"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [344, 16.0]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: put 32k later
+    value: 32000*2
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [200, 12]
+    rotation: 0
+    state: enabled
+- name: ber_async_ber_calculator_0
+  id: ber_async_ber_calculator
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    sequence: '1101000101011100101001111010011110101011010110001111010101001111011101110110101'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [640, 64.0]
+    rotation: 0
+    state: enabled
+- name: blocks_char_to_float_0
+  id: blocks_char_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: '1'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [688, 320.0]
+    rotation: 0
+    state: disabled
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: debug_jul8.bin
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [680, 240.0]
+    rotation: 0
+    state: disabled
+- name: blocks_packed_to_unpacked_xx_0
+  id: blocks_packed_to_unpacked_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    bits_per_chunk: '8'
+    comment: '!= Unpack K bits. Idk WHAT it does.'
+    endianness: gr.GR_MSB_FIRST
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_ports: '1'
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [472, 248.0]
+    rotation: 0
+    state: disabled
+- name: blocks_throttle2_0
+  id: blocks_throttle2
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    limit: auto
+    maximum: '0.1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate*2
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [272, 152.0]
+    rotation: 0
+    state: enabled
+- name: blocks_unpack_k_bits_bb_0
+  id: blocks_unpack_k_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '8'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [472, 160.0]
+    rotation: 0
+    state: bypassed
+- name: blocks_vector_source_x_0
+  id: blocks_vector_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    repeat: 'True'
+    tags: '[]'
+    type: byte
+    vector: '[int(i) for i in msg]'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [72, 144.0]
+    rotation: 0
+    state: enabled
+- name: epy_block_0
+  id: epy_block
+  parameters:
+    _source_code: "import numpy as np\nfrom gnuradio import gr\n\n\nclass blk(gr.sync_block):\n\
+      \    \"\"\"\n    Repeating byte source:\n      0, 1, 2, ..., 255, 0, 1, ...\n\
+      \    \"\"\"\n\n    def __init__(self):\n        gr.sync_block.__init__(\n  \
+      \          self,\n            name=\"Repeating 0-255 Byte Source\",\n      \
+      \      in_sig=None,\n            out_sig=[np.uint8],\n        )\n\n        self.index\
+      \ = 0\n\n    def work(self, input_items, output_items):\n        out = output_items[0]\n\
+      \        n = len(out)\n\n        out[:] = (self.index + np.arange(n)) % 256\n\
+      \        self.index = (self.index + n) % 256\n\n        n=0\n\n        return\
+      \ n\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    _io_cache: ('Repeating 0-255 Byte Source', 'blk', [], [], [('0', 'byte', 1)],
+      '\nRepeating byte source:\n  0, 1, 2, ..., 255, 0, 1, ...\n', [])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [40, 168.0]
+    rotation: 0
+    state: disabled
+- name: epy_block_1
+  id: epy_block
+  parameters:
+    _source_code: "# import numpy as np\n# from gnuradio import gr\n#\n# PILOT_LEN\
+      \ = 256\n#\n# def pack_bits_with_offset(bits, bit_offset, bitorder):\n#    \
+      \ trimmed = bits[bit_offset:]\n#     n_bytes = len(trimmed) // 8\n#     if n_bytes\
+      \ == 0:\n#         return np.array([], dtype=np.uint8)\n#     usable = trimmed[:n_bytes\
+      \ * 8]\n#     return np.packbits(usable, bitorder=bitorder)\n#\n# def is_increasing_mod256(packed,\
+      \ min_run=16):\n#     \"\"\"\n#     Check if packed bytes look like the repeating\
+      \ 0..255 ramp.\n#     Returns fraction of consecutive pairs that are +1 mod\
+      \ 256.\n#     \"\"\"\n#     if len(packed) < 2:\n#         return 0.0\n#   \
+      \  expected_next = ((packed[:-1].astype(np.uint16) + 1) % 256).astype(np.uint8)\n\
+      #     good = np.sum(packed[1:] == expected_next)\n#     return good / (len(packed)\
+      \ - 1)\n#\n# def find_best_alignment(bits, min_run=16):\n#     \"\"\"\n#   \
+      \  Try all 8 bit offsets for a fixed (harcoded!) bit order.\n#     Returns (best_bit_offset,\
+      \ best_bitorder, best_byte_phase) or None.\n#     \"\"\"\n#     best = None\n\
+      #     best_score = 0.0\n#\n#     bitorder = \"big\" # hardcoded\n#\n#     for\
+      \ bit_offset in range(8):\n#         packed = pack_bits_with_offset(bits, bit_offset,\
+      \ bitorder)\n#         if len(packed) < min_run:\n#             continue\n#\
+      \         score = is_increasing_mod256(packed)\n#         if score > best_score:\n\
+      #             # find byte phase: which value does the sequence start at?\n#\
+      \             best_score = score\n#             # estimate byte phase from first\
+      \ byte\n#             byte_phase = int(packed[0])\n#             best = (bit_offset,\
+      \ bitorder, byte_phase, score)\n#\n#     return best  # None if nothing found\n\
+      #\n#\n# class blk(gr.sync_block):\n#     def __init__(self, buffer_size=20000,\
+      \ realign_interval=50000, periodic_realign=True, score_threshold=0.2, stats_reset_interval=1000):\n\
+      #         gr.sync_block.__init__(\n#             self,\n#             name='BER\
+      \ Calculator',\n#             in_sig=[np.uint8],       # unpacked bit stream\
+      \ (0s and 1s)\n#             out_sig=[np.float32, np.float32]  # [BER, byte\
+      \ error rate]\n#         )\n#         self.buffer_size = buffer_size\n#    \
+      \     self.realign_interval = realign_interval\n#         self.periodic_realign\
+      \ = periodic_realign\n#         self.score_threshold = score_threshold\n#\n\
+      #         self.bit_buffer = np.array([], dtype=np.uint8)\n#\n#         self.synced\
+      \ = False\n#         self.bit_offset = 0\n#         self.bitorder = 'big'\n\
+      #         self.byte_phase = 0         # which value in 0..255 we expect next\n\
+      #\n#         self.total_bits = 0\n#         self.total_bit_errors = 0\n#   \
+      \      self.total_bytes = 0\n#         self.total_byte_errors = 0\n#\n#    \
+      \     self.print_counter = 0\n#         self.realign_counter = 0\n#        \
+      \ self.last_ber = 0.0\n#         self.last_byter = 0.0\n#\n#         self.stats_reset_interval\
+      \ = stats_reset_interval\n#\n#     def try_align(self):\n#         '''\n#  \
+      \       calls find_best_alignment() to find the best alignment out of the 16\
+      \ orders, and\n#         returns True if the score is larger than score_threshold\n\
+      #         '''\n#\n#\n#         result = find_best_alignment(self.bit_buffer)\n\
+      #         if result is None:\n#             print(\"[BER] Could not find alignment.\"\
+      )\n#             # return False\n#         bit_offset, bitorder, byte_phase,\
+      \ score = result\n#         self.bit_offset = bit_offset\n#         self.bitorder\
+      \ = bitorder\n#         self.byte_phase = byte_phase\n#         # consume the\
+      \ bits used for alignment\n#         self.bit_buffer = self.bit_buffer[bit_offset:]\n\
+      #         print(f\"[BER] bit_offset={bit_offset} byte_phase={byte_phase} score={score:.4f}\"\
+      )\n#\n#         if score > self.score_threshold:\n#             return True\n\
+      #         else:\n#             print(\"Bad alignment score\")\n#           \
+      \  return False\n#\n#     def work(self, input_items, output_items):\n#    \
+      \     bits_in = input_items[0]\n#         n = len(bits_in)\n#\n#         self.bit_buffer\
+      \ = np.append(self.bit_buffer, bits_in)\n#\n#         if not self.synced:\n\
+      #             if len(self.bit_buffer) >= self.buffer_size:\n#              \
+      \   self.synced = self.try_align()\n#                 if not self.synced:\n\
+      #                     # discard half the buffer and try again next time\n# \
+      \                    self.bit_buffer = self.bit_buffer[self.buffer_size // 2:]\n\
+      #\n#         else:\n#             # pack available bits into bytes using locked\
+      \ alignment\n#             n_bytes = len(self.bit_buffer) // 8\n#          \
+      \   if n_bytes > 0:\n#                 usable = self.bit_buffer[:n_bytes * 8]\n\
+      #                 packed = np.packbits(usable, bitorder=self.bitorder)\n#  \
+      \               self.bit_buffer = self.bit_buffer[n_bytes * 8:]\n#\n#      \
+      \           # build expected ramp\n#                 expected = ((self.byte_phase\
+      \ + np.arange(n_bytes)) % PILOT_LEN).astype(np.uint8)\n#                 self.byte_phase\
+      \ = int((self.byte_phase + n_bytes) % PILOT_LEN)\n#\n#                 # byte\
+      \ errors\n#                 byte_errors = int(np.sum(packed != expected))\n\
+      #                 self.total_bytes += n_bytes\n#                 self.total_byte_errors\
+      \ += byte_errors\n#\n#                 # bit errors\n#                 xor =\
+      \ np.bitwise_xor(packed, expected)\n#                 bit_errors = int(np.sum(np.unpackbits(xor)))\n\
+      #                 self.total_bits += n_bytes * 8\n#                 self.total_bit_errors\
+      \ += bit_errors\n#\n#                 self.realign_counter += n_bytes\n#   \
+      \              self.print_counter += n_bytes\n#\n#                 if self.print_counter\
+      \ >= self.stats_reset_interval:\n#                     self.last_ber = self.total_bit_errors\
+      \ / self.total_bits if self.total_bits else 0.0\n#                     self.last_byter\
+      \ = self.total_byte_errors / self.total_bytes if self.total_bytes else 0.0\n\
+      #                     print(f\"[BER] BER={self.last_ber:.6f}  ByteER={self.last_byter:.6f}\
+      \  bits={self.total_bits}  bytes={self.total_bytes}\")\n#                  \
+      \   self.print_counter = 0\n#                     self.total_bits = 0\n#   \
+      \                  self.total_bit_errors = 0\n#                     self.total_bytes\
+      \ = 0\n#                     self.total_byte_errors = 0\n#\n#\n#           \
+      \      if self.periodic_realign and self.realign_counter >= self.realign_interval:\n\
+      #                     self.realign_counter = 0\n#                     self.synced\
+      \ = False\n#                     self.bit_buffer = np.array([], dtype=np.uint8)\n\
+      #                     print(\"[BER] Re-aligning...\")\n#\n#         output_items[0][:n]\
+      \ = self.last_ber\n#         output_items[1][:n] = self.last_byter\n#      \
+      \   return n\n\"\"\"\nGNU Radio BER calculator block for a known pilot stream.\n\
+      \nThe input is an unpacked bit stream (0/1 values). The block tries to lock\n\
+      onto a repeating byte ramp, counts BER and byte error rate continuously, and\n\
+      keeps running even when lock is lost.\n\nPilot pattern:\n0, 1, 2, ..., 255 repeated,\
+      \ with both 255 and 256-period interpretations\nchecked during alignment.\n\"\
+      \"\"\n\nimport numpy as np\nfrom gnuradio import gr\n\nPILOT_LEN_CANDIDATES\
+      \ = (255, 256)\n\n\ndef pack_bits_with_offset(bits, bit_offset, bitorder):\n\
+      \    trimmed = bits[bit_offset:]\n    n_bytes = len(trimmed) // 8\n    if n_bytes\
+      \ == 0:\n        return np.array([], dtype=np.uint8)\n    usable = trimmed[:n_bytes\
+      \ * 8]\n    return np.packbits(usable, bitorder=bitorder)\n\n\ndef best_exact_ramp_score(packed,\
+      \ pilot_len):\n    \"\"\"Return the best phase and exact-match fraction for\
+      \ a given pilot length.\"\"\"\n    if len(packed) == 0:\n        return 0, 0.0\n\
+      \n    i_mod = (np.arange(len(packed), dtype=np.uint32) % pilot_len).astype(np.uint16)\n\
+      \    packed_u16 = packed.astype(np.uint16)\n    phase_vec = (packed_u16 - i_mod)\
+      \ % pilot_len\n    counts = np.bincount(phase_vec.astype(np.int64), minlength=pilot_len)\n\
+      \    phase = int(np.argmax(counts))\n    score = float(counts[phase]) / float(len(packed))\n\
+      \    return phase, score\n\n\ndef find_best_alignment(bits, min_run=16):\n \
+      \   \"\"\"\n    Try all 8 bit offsets x 2 bit orders x candidate pilot lengths.\n\
+      \    Returns (best_bit_offset, best_bitorder, best_byte_phase, best_pilot_len,\
+      \ score) or None.\n    \"\"\"\n    best = None\n    best_score = 0.0\n\n   \
+      \ for bitorder in ['big', 'little']:\n        for bit_offset in range(8):\n\
+      \            packed = pack_bits_with_offset(bits, bit_offset, bitorder)\n  \
+      \          if len(packed) < min_run:\n                continue\n           \
+      \ for pilot_len in PILOT_LEN_CANDIDATES:\n                byte_phase, score\
+      \ = best_exact_ramp_score(packed, pilot_len)\n                if score > best_score:\n\
+      \                    best_score = score\n                    best = (bit_offset,\
+      \ bitorder, byte_phase, pilot_len, score)\n\n    return best\n\n\nclass blk(gr.sync_block):\n\
+      \    def __init__(self, buffer_size=20000, realign_interval=50000, periodic_realign=True,\
+      \ score_threshold=0.8, stats_reset_interval=1000):\n        gr.sync_block.__init__(\n\
+      \            self,\n            name='BER Calculator',\n            in_sig=[np.uint8],\n\
+      \            out_sig=[np.float32, np.float32],\n        )\n        self.buffer_size\
+      \ = buffer_size\n        self.realign_interval = realign_interval\n        self.periodic_realign\
+      \ = periodic_realign\n        self.score_threshold = score_threshold\n\n   \
+      \     self.bit_buffer = np.array([], dtype=np.uint8)\n        self.count_buffer\
+      \ = np.array([], dtype=np.uint8)\n\n        self.synced = False\n        self.bit_offset\
+      \ = 0\n        self.bitorder = 'big'\n        self.byte_phase = 0\n        self.pilot_len\
+      \ = 256\n\n        self.total_bits = 0\n        self.total_bit_errors = 0\n\
+      \        self.total_bytes = 0\n        self.total_byte_errors = 0\n\n      \
+      \  self.print_counter = 0\n        self.realign_counter = 0\n        self.last_ber\
+      \ = 0.0\n        self.last_byter = 0.0\n        self.stats_reset_interval =\
+      \ stats_reset_interval\n        self.work_calls = 0\n\n        print(\n    \
+      \        f'[BER] init buffer_size={buffer_size} realign_interval={realign_interval}\
+      \ '\n            f'periodic_realign={periodic_realign} score_threshold={score_threshold}\
+      \ '\n            f'stats_reset_interval={stats_reset_interval}',\n         \
+      \   flush=True,\n        )\n\n    def try_align(self):\n        print(f'[BER]\
+      \ try_align buffer_len={len(self.bit_buffer)}', flush=True)\n        result\
+      \ = find_best_alignment(self.bit_buffer)\n        if result is None:\n     \
+      \       print('[BER] Could not find alignment.', flush=True)\n            return\
+      \ False\n\n        bit_offset, bitorder, byte_phase, pilot_len, score = result\n\
+      \        if score < self.score_threshold:\n            print(f'[BER] Best alignment\
+      \ score {score:.3f} below threshold {self.score_threshold}. Not locking.', flush=True)\n\
+      \            return False\n\n        self.bit_offset = bit_offset\n        self.bitorder\
+      \ = bitorder\n        self.byte_phase = byte_phase\n        self.pilot_len =\
+      \ pilot_len\n        self.bit_buffer = self.bit_buffer[bit_offset:]\n      \
+      \  print(\n            f'[BER] Locked. bit_offset={bit_offset} bitorder={bitorder}\
+      \ '\n            f'byte_phase={byte_phase} pilot_len={pilot_len} score={score:.4f}'\n\
+      \        , flush=True)\n        return True\n\n    def count_available_bytes(self):\n\
+      \        n_bytes = len(self.count_buffer) // 8\n        if n_bytes == 0:\n \
+      \           return\n\n        usable = self.count_buffer[:n_bytes * 8]\n   \
+      \     packed = np.packbits(usable, bitorder=self.bitorder)\n        self.count_buffer\
+      \ = self.count_buffer[n_bytes * 8:]\n\n        expected = ((self.byte_phase\
+      \ + np.arange(n_bytes)) % self.pilot_len).astype(np.uint8)\n        byte_errors\
+      \ = int(np.sum(packed != expected))\n        xor = np.bitwise_xor(packed, expected)\n\
+      \        bit_errors = int(np.sum(np.unpackbits(xor)))\n\n        self.total_bytes\
+      \ += n_bytes\n        self.total_byte_errors += byte_errors\n        self.total_bits\
+      \ += n_bytes * 8\n        self.total_bit_errors += bit_errors\n\n        if\
+      \ self.synced and byte_errors > 0:\n            self.synced = False\n      \
+      \      print('[BER] Lost lock, but BER counting continues.', flush=True)\n\n\
+      \        print(\n            f'[BER] count_available_bytes n_bytes={n_bytes}\
+      \ byte_errors={byte_errors} '\n            f'bit_errors={bit_errors} next_phase={self.byte_phase}\
+      \ synced={self.synced}',\n            flush=True,\n        )\n\n        self.byte_phase\
+      \ = int((self.byte_phase + n_bytes) % self.pilot_len)\n        self.realign_counter\
+      \ += n_bytes\n        self.print_counter += n_bytes\n\n    def work(self, input_items,\
+      \ output_items):\n        bits_in = input_items[0]\n        n = len(bits_in)\n\
+      \        self.work_calls += 1\n\n        print(\n            f'[BER] work call={self.work_calls}\
+      \ n={n} '\n            f'bit_buffer={len(self.bit_buffer)} count_buffer={len(self.count_buffer)}\
+      \ synced={self.synced}',\n            flush=True,\n        )\n\n        self.bit_buffer\
+      \ = np.append(self.bit_buffer, bits_in)\n        self.count_buffer = np.append(self.count_buffer,\
+      \ bits_in)\n\n        self.count_available_bytes()\n\n        if not self.synced\
+      \ and len(self.bit_buffer) >= self.buffer_size:\n            self.synced = self.try_align()\n\
+      \            if not self.synced:\n                self.bit_buffer = self.bit_buffer[self.buffer_size\
+      \ // 2:]\n\n        if self.print_counter >= self.stats_reset_interval:\n  \
+      \          self.last_ber = self.total_bit_errors / self.total_bits if self.total_bits\
+      \ else 0.0\n            self.last_byter = self.total_byte_errors / self.total_bytes\
+      \ if self.total_bytes else 0.0\n            print(f'[BER] BER={self.last_ber:.6f}\
+      \  ByteER={self.last_byter:.6f}  bits={self.total_bits}  bytes={self.total_bytes}',\
+      \ flush=True)\n            self.print_counter = 0\n            self.total_bits\
+      \ = 0\n            self.total_bit_errors = 0\n            self.total_bytes =\
+      \ 0\n            self.total_byte_errors = 0\n\n        if self.periodic_realign\
+      \ and self.realign_counter >= self.realign_interval:\n            self.realign_counter\
+      \ = 0\n            self.synced = False\n            self.bit_buffer = np.array([],\
+      \ dtype=np.uint8)\n            print('[BER] Re-aligning...', flush=True)\n\n\
+      \        if len(self.bit_buffer) > self.buffer_size * 2:\n            self.bit_buffer\
+      \ = self.bit_buffer[-self.buffer_size:]\n\n        if self.work_calls % 50 ==\
+      \ 0:\n            print(\n                f'[BER] status work_calls={self.work_calls}\
+      \ bit_buffer={len(self.bit_buffer)} '\n                f'count_buffer={len(self.count_buffer)}\
+      \ total_bits={self.total_bits} '\n                f'total_bit_errors={self.total_bit_errors}\
+      \ synced={self.synced}',\n                flush=True,\n            )\n\n   \
+      \     output_items[0][:n] = self.last_ber\n        output_items[1][:n] = self.last_byter\n\
+      \        return n\n"
+    affinity: ''
+    alias: ''
+    buffer_size: '20000'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    periodic_realign: 'True'
+    realign_interval: '50000'
+    score_threshold: '0.2'
+    stats_reset_interval: '1000'
+  states:
+    _io_cache: ('BER Calculator', 'blk', [('buffer_size', '20000'), ('realign_interval',
+      '50000'), ('periodic_realign', 'True'), ('score_threshold', '0.8'), ('stats_reset_interval',
+      '1000')], [('0', 'byte', 1)], [('0', 'float', 1), ('1', 'float', 1)], '', ['buffer_size',
+      'periodic_realign', 'realign_interval', 'score_threshold', 'stats_reset_interval'])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [672, 128.0]
+    rotation: 0
+    state: disabled
+- name: qtgui_number_sink_0
+  id: qtgui_number_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    autoscale: 'False'
+    avg: '0'
+    color1: ("black", "black")
+    color10: ("black", "black")
+    color2: ("black", "black")
+    color3: ("black", "black")
+    color4: ("black", "black")
+    color5: ("black", "black")
+    color6: ("black", "black")
+    color7: ("black", "black")
+    color8: ("black", "black")
+    color9: ("black", "black")
+    comment: ''
+    factor1: '1'
+    factor10: '1'
+    factor2: '1'
+    factor3: '1'
+    factor4: '1'
+    factor5: '1'
+    factor6: '1'
+    factor7: '1'
+    factor8: '1'
+    factor9: '1'
+    graph_type: qtgui.NUM_GRAPH_HORIZ
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    max: '200'
+    min: '-200'
+    name: '""'
+    nconnections: '1'
+    type: float
+    unit1: ''
+    unit10: ''
+    unit2: ''
+    unit3: ''
+    unit4: ''
+    unit5: ''
+    unit6: ''
+    unit7: ''
+    unit8: ''
+    unit9: ''
+    update_time: '0.10'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [872, 368.0]
+    rotation: 0
+    state: disabled
+- name: qtgui_number_sink_1
+  id: qtgui_number_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    autoscale: 'False'
+    avg: '0'
+    color1: ("black", "black")
+    color10: ("black", "black")
+    color2: ("black", "black")
+    color3: ("black", "black")
+    color4: ("black", "black")
+    color5: ("black", "black")
+    color6: ("black", "black")
+    color7: ("black", "black")
+    color8: ("black", "black")
+    color9: ("black", "black")
+    comment: ''
+    factor1: '1'
+    factor10: '1'
+    factor2: '1'
+    factor3: '1'
+    factor4: '1'
+    factor5: '1'
+    factor6: '1'
+    factor7: '1'
+    factor8: '1'
+    factor9: '1'
+    graph_type: qtgui.NUM_GRAPH_HORIZ
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    max: '1'
+    min: '-1'
+    name: '""'
+    nconnections: '1'
+    type: float
+    unit1: ''
+    unit10: ''
+    unit2: ''
+    unit3: ''
+    unit4: ''
+    unit5: ''
+    unit6: ''
+    unit7: ''
+    unit8: ''
+    unit9: ''
+    update_time: '0.10'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1080, 168.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_time_sink_x_0
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'False'
+    entags: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label1: Signal 1
+    label10: Signal 10
+    label2: Signal 2
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '""'
+    nconnections: '1'
+    size: '1024'
+    srate: samp_rate
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '2'
+    ymin: '-2'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [864, 304.0]
+    rotation: 0
+    state: disabled
+- name: qtgui_time_sink_x_0_0
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'False'
+    entags: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label1: Signal 1
+    label10: Signal 10
+    label2: Signal 2
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '""'
+    nconnections: '2'
+    size: '1024'
+    srate: samp_rate
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '1'
+    ymin: '-1'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [904, 56.0]
+    rotation: 0
+    state: enabled
+
+connections:
+- [ber_async_ber_calculator_0, '0', qtgui_number_sink_1, '0']
+- [ber_async_ber_calculator_0, '0', qtgui_time_sink_x_0_0, '0']
+- [ber_async_ber_calculator_0, '1', qtgui_time_sink_x_0_0, '1']
+- [blocks_char_to_float_0, '0', qtgui_number_sink_0, '0']
+- [blocks_char_to_float_0, '0', qtgui_time_sink_x_0, '0']
+- [blocks_packed_to_unpacked_xx_0, '0', blocks_file_sink_0, '0']
+- [blocks_throttle2_0, '0', blocks_packed_to_unpacked_xx_0, '0']
+- [blocks_throttle2_0, '0', blocks_unpack_k_bits_bb_0, '0']
+- [blocks_unpack_k_bits_bb_0, '0', ber_async_ber_calculator_0, '0']
+- [blocks_unpack_k_bits_bb_0, '0', blocks_char_to_float_0, '0']
+- [blocks_unpack_k_bits_bb_0, '0', blocks_file_sink_0, '0']
+- [blocks_unpack_k_bits_bb_0, '0', epy_block_1, '0']
+- [blocks_vector_source_x_0, '0', blocks_throttle2_0, '0']
+- [epy_block_0, '0', blocks_throttle2_0, '0']
+- [epy_block_1, '0', qtgui_time_sink_x_0_0, '0']
+- [epy_block_1, '1', qtgui_time_sink_x_0_0, '1']
+
+metadata:
+  file_format: 1
+  grc_version: 3.10.12.0

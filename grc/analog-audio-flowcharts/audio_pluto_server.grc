@@ -369,7 +369,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    file: /home/yutong/FINCH-RF-SDR/grc/guitar.mp3
+    file: guitar.mp3
     maxoutbuf: '0'
     minoutbuf: '0'
     nchan: '1'
@@ -406,7 +406,7 @@ blocks:
     bus_structure: null
     coordinate: [1064, 308.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: iio_pluto_source_0
   id: iio_pluto_source
   parameters:
@@ -437,7 +437,7 @@ blocks:
     bus_structure: null
     coordinate: [128, 604.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: low_pass_filter_0
   id: low_pass_filter
   parameters:
@@ -573,6 +573,32 @@ blocks:
     coordinate: [840, 680.0]
     rotation: 0
     state: true
+- name: virtual_sink_0
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: test
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [928, 440.0]
+    rotation: 0
+    state: enabled
+- name: virtual_source_0
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: test
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [192, 704.0]
+    rotation: 0
+    state: enabled
 - name: zeromq_push_sink_0
   id: zeromq_push_sink
   parameters:
@@ -605,8 +631,10 @@ connections:
 - [low_pass_filter_0, '0', rational_resampler_xxx_1, '0']
 - [rational_resampler_xxx_0, '0', iio_pluto_sink_0, '0']
 - [rational_resampler_xxx_0, '0', qtgui_sink_x_1, '0']
+- [rational_resampler_xxx_0, '0', virtual_sink_0, '0']
 - [rational_resampler_xxx_1, '0', analog_simple_squelch_cc_0, '0']
+- [virtual_source_0, '0', blocks_freqshift_cc_0, '0']
 
 metadata:
   file_format: 1
-  grc_version: 3.10.11.0
+  grc_version: 3.10.12.0
