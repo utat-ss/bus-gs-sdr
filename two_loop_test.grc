@@ -1,0 +1,461 @@
+options:
+  parameters:
+    author: ''
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: two_loop_test
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: Not titled yet
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: cc
+  id: variable
+  parameters:
+    comment: ''
+    value: 'True'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [520, 16.0]
+    rotation: 0
+    state: enabled
+- name: crc
+  id: variable
+  parameters:
+    comment: ''
+    value: 'True'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [696, 16.0]
+    rotation: 0
+    state: enabled
+- name: noise_amp
+  id: variable
+  parameters:
+    comment: ''
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [320, 16.0]
+    rotation: 0
+    state: enabled
+- name: per_lbl
+  id: variable_qtgui_label
+  parameters:
+    comment: ''
+    formatter: None
+    gui_hint: 13,1,1,1
+    label: PER
+    type: string
+    value: '"{:.2f} %  ({} lost)".format(100.0*(1 - pkt_count/pkt_sent), pkt_sent
+      - pkt_count) if pkt_sent > 0 else "set N"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1288, 308.0]
+    rotation: 0
+    state: enabled
+- name: pkt_count
+  id: variable_function_probe
+  parameters:
+    block_id: pkt_counter
+    comment: ''
+    function_args: ''
+    function_name: count
+    poll_rate: '10'
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1288, 16.0]
+    rotation: 0
+    state: enabled
+- name: pkt_count_lbl
+  id: variable_qtgui_label
+  parameters:
+    comment: ''
+    formatter: None
+    gui_hint: 12,1,1,1
+    label: Packets received
+    type: int
+    value: pkt_count
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1288, 180.0]
+    rotation: 0
+    state: enabled
+- name: pkt_reset
+  id: variable_qtgui_push_button
+  parameters:
+    comment: ''
+    gui_hint: 12,0,1,1
+    label: Reset count
+    pressed: '1'
+    released: '0'
+    type: int
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1288, 88.0]
+    rotation: 0
+    state: enabled
+- name: pkt_sent
+  id: variable_qtgui_entry
+  parameters:
+    comment: ''
+    entry_signal: editingFinished
+    gui_hint: 13,0,1,1
+    label: Packets sent (N)
+    type: int
+    value: '2000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1288, 244.0]
+    rotation: 0
+    state: enabled
+- name: rs
+  id: variable
+  parameters:
+    comment: ''
+    value: 'True'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [608, 16.0]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: 4e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [136, 8.0]
+    rotation: 0
+    state: enabled
+- name: symbol_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '1000000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 16.0]
+    rotation: 0
+    state: enabled
+- name: analog_noise_source_x_0
+  id: analog_noise_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: noise_amp
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    noise_type: analog.GR_GAUSSIAN
+    seed: '0'
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [456, 372.0]
+    rotation: 0
+    state: enabled
+- name: blocks_add_xx_0
+  id: blocks_add_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [608, 244.0]
+    rotation: 0
+    state: enabled
+- name: blocks_throttle2_0
+  id: blocks_throttle2
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    limit: auto
+    maximum: '0.1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [728, 240.0]
+    rotation: 0
+    state: enabled
+- name: network_socket_pdu_0
+  id: network_socket_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    host: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mtu: '10000'
+    port: '52003'
+    tcp_no_delay: 'False'
+    type: UDP_SERVER
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [176, 200.0]
+    rotation: 0
+    state: enabled
+- name: pkt_counter
+  id: epy_block
+  parameters:
+    _source_code: "\"\"\"\nPacket counter: counts every packet on SRS-4 Receiver csp_out.\n\
+      Press \"Reset count\" to set the count back to 0.\n\"\"\"\nimport threading\n\
+      import pmt\nfrom gnuradio import gr\n\n\nclass blk(gr.basic_block):\n    def\
+      \ __init__(self, reset=0):\n        gr.basic_block.__init__(self, name=\"Packet\
+      \ counter\", in_sig=None, out_sig=None)\n        self._reset = reset\n     \
+      \   self._n = 0\n        self._lock = threading.Lock()\n        self.message_port_register_in(pmt.intern(\"\
+      in\"))\n        self.set_msg_handler(pmt.intern(\"in\"), self._handle)\n\n \
+      \   # Called by GRC when the reset button changes; resets on the press\n   \
+      \ @property\n    def reset(self):\n        return self._reset\n\n    @reset.setter\n\
+      \    def reset(self, v):\n        if v and not self._reset:\n            with\
+      \ self._lock:\n                self._n = 0\n        self._reset = v\n\n    def\
+      \ _handle(self, msg):\n        with self._lock:\n            self._n += 1\n\n\
+      \    def count(self):\n        with self._lock:\n            return self._n\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    reset: pkt_reset
+  states:
+    _io_cache: ('Packet counter', 'blk', [('reset', '0')], [('in', 'message', 1)],
+      [], '', ['reset'])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1080, 140.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_const_sink_x_0
+  id: qtgui_const_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    grid: 'False'
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: '0'
+    marker10: '0'
+    marker2: '0'
+    marker3: '0'
+    marker4: '0'
+    marker5: '0'
+    marker6: '0'
+    marker7: '0'
+    marker8: '0'
+    marker9: '0'
+    name: '""'
+    nconnections: '1'
+    size: '1024'
+    style1: '0'
+    style10: '0'
+    style2: '0'
+    style3: '0'
+    style4: '0'
+    style5: '0'
+    style6: '0'
+    style7: '0'
+    style8: '0'
+    style9: '0'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: complex
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    xmax: '2'
+    xmin: '-2'
+    ymax: '2'
+    ymin: '-2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1072, 288.0]
+    rotation: 0
+    state: enabled
+- name: satlab_srs4_rx_0
+  id: satlab_srs4_rx
+  parameters:
+    affinity: ''
+    alias: ''
+    auth: 'False'
+    cc: cc
+    comment: ''
+    constellation: QPSK
+    crc: crc
+    decrypt: 'False'
+    idnum: '0'
+    key: '"\x00" * 32'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    rand: 'True'
+    rate: symbol_rate
+    rolloff: '0.2'
+    rs: rs
+    samp_rate: 4e6
+    size: '217'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [880, 196.0]
+    rotation: 0
+    state: enabled
+- name: satlab_srs4_tx_0
+  id: satlab_srs4_tx
+  parameters:
+    affinity: ''
+    alias: ''
+    auth: 'False'
+    cc: cc
+    comment: ''
+    constellation: QPSK
+    crc: crc
+    encrypt: 'False'
+    idleframes: '10000'
+    idnum: '0'
+    key: '"\x00" * 32'
+    max_in_flight: '100'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    rand: 'True'
+    rate: symbol_rate
+    rolloff: '0.2'
+    rs: rs
+    samp_rate: 4e6
+    size: '217'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [360, 196.0]
+    rotation: 0
+    state: enabled
+
+connections:
+- [analog_noise_source_x_0, '0', blocks_add_xx_0, '1']
+- [blocks_add_xx_0, '0', blocks_throttle2_0, '0']
+- [blocks_throttle2_0, '0', satlab_srs4_rx_0, '0']
+- [network_socket_pdu_0, pdus, satlab_srs4_tx_0, csp_in]
+- [satlab_srs4_rx_0, '0', qtgui_const_sink_x_0, '0']
+- [satlab_srs4_rx_0, csp_out, pkt_counter, in]
+- [satlab_srs4_tx_0, '0', blocks_add_xx_0, '0']
+
+metadata:
+  file_format: 1
+  grc_version: 3.10.12.0
